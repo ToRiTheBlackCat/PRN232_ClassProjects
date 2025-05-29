@@ -15,25 +15,25 @@ namespace ProductWebAPI.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly IProductService _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(IProductService context)
+        public ProductsController(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
         // GET: api/Products
         [HttpGet]
         public ActionResult<IEnumerable<Product>> GetProducts()
         {
-            return _context.GetProducts();
+            return _productService.GetProducts();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
         public ActionResult<Product> GetProduct(int id)
         {
-            var product = _context.GetProductById(id);
+            var product = _productService.GetProductById(id);
 
             if (product == null)
             {
@@ -55,7 +55,7 @@ namespace ProductWebAPI.Controllers
 
             try
             {
-                _context.UpdateProduct(product);
+                _productService.UpdateProduct(product);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,7 +77,7 @@ namespace ProductWebAPI.Controllers
         [HttpPost]
         public ActionResult<Product> PostProduct(Product product)
         {
-            _context.SaveProduct(product);
+            _productService.SaveProduct(product);
 
             return CreatedAtAction("GetProduct", new { id = product.ProductId }, product);
         }
@@ -86,19 +86,19 @@ namespace ProductWebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(int id)
         {
-            var product = _context.GetProductById(id);
+            var product = _productService.GetProductById(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            _context.DeleteProduct(product);
+            _productService.DeleteProduct(product);
 
             return NoContent();
         }
         private bool ProductExists(int id)
         {
-            var foundProduct = _context.GetProductById(id);
+            var foundProduct = _productService.GetProductById(id);
             return foundProduct != null ? true : false;
         }
     }
