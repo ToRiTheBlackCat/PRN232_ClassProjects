@@ -8,9 +8,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddAuthentication()
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
-        options.LoginPath = new PathString("/Account/Login");
-        options.AccessDeniedPath = new PathString("/Account/Forbidden");
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+        options.LoginPath = new PathString("/Auth/Login");
+        options.ExpireTimeSpan = TimeSpan.FromHours(5);
 
     });
 

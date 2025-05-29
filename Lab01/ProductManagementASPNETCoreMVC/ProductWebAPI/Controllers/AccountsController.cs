@@ -33,34 +33,21 @@ namespace ProductWebAPI.Controllers
         {
             try
             {
-
                 var foundAccount = _userService.Authenticate(request);
                 if (foundAccount != null)
                 {
-                    var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, foundAccount.FullName),
-                            new Claim(ClaimTypes.Role, foundAccount.MemberRole.ToString())
-                        };
-
-                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
-
-                    Response.Cookies.Append("FullName", foundAccount.FullName);
-                    Response.Cookies.Append("Role", foundAccount.MemberRole.ToString());
-
-                    return Ok(foundAccount);
+                    return Ok(foundAccount); 
                 }
             }
             catch (Exception ex)
             {
-
+                // Optionally log the error
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
             }
 
-            HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            ModelState.AddModelError("", "Login failure. Invalid email or password");
-            return NotFound();
+            return NotFound("Invalid email or password");
         }
+
 
         // GET: api/Account
         [HttpGet]
