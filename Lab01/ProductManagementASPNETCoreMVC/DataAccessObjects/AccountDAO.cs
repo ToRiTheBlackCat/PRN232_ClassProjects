@@ -88,5 +88,10 @@ namespace DataAccessObjects
             using var db = new MyStoreDBContext();
             return db.AccountMembers.FirstOrDefault(c => c.MemberId.Equals(accountId));
         }
+        public static AccountMember? GetAccountByEmailAndPassword(string email, string password)
+        {
+            using var db = new MyStoreDBContext();
+            return db.AccountMembers.FirstOrDefault(c => c.EmailAddress.Equals(email) && c.MemberPassword.Equals(password));
+        }
     }
 }

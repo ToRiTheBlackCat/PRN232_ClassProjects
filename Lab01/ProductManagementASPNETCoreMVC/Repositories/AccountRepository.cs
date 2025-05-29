@@ -14,6 +14,8 @@ namespace Repositories
 
         public void DeleteAccount(AccountMember acc) => AccountDAO.DeleteAccount(acc);
 
+        public AccountMember? GetAccountByEmailAndPassword(string email, string password) => AccountDAO.GetAccountByEmailAndPassword(email,password);
+
         public AccountMember? GetAccountById(string accountId) => AccountDAO.GetAccountById(accountId);
 
         public List<AccountMember> GetAccounts() => AccountDAO.GetAccounts();

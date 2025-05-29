@@ -15,5 +15,7 @@ namespace Repositories
         void CreateAccount(AccountMember acc);
         List<AccountMember> GetAccounts();
         AccountMember? GetAccountById(string accountId);
+        AccountMember? GetAccountByEmailAndPassword(string email, string password);
+
     }
 }
