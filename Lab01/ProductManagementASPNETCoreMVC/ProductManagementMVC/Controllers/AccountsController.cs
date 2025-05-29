@@ -7,7 +7,7 @@ using System.Text;
 
 namespace ProductManagementMVC.Controllers
 {
-    public class AccountController : Controller
+    public class AccountsController : Controller
     {
         public IActionResult Index()
         {
@@ -42,7 +42,7 @@ namespace ProductManagementMVC.Controllers
 
                         if (account != null)
                         {
-                            return RedirectToAction("Index", "Home"); 
+                            return RedirectToAction("Index", "Products"); 
                         }
                     }
                 }
