@@ -1,5 +1,6 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace FUNewsManagementSystem.Repository
     {
         public AccountRepository()
         {
-
         }
+
         public async Task<bool> RemoveWithCheckingAsync(SystemAccount acc)
         {
             if (acc.NewsArticles == null)
@@ -25,5 +26,15 @@ namespace FUNewsManagementSystem.Repository
 
             return false;
         }
+
+        public async Task<List<SystemAccount>> GetAccountsAsync(string? accName)
+        {
+            if (accName != null)
+            {
+                return await _context.SystemAccounts.Where(x => x.AccountName.Contains(accName)).ToListAsync();
+            }
+            return await _context.SystemAccounts.ToListAsync();
+        }
+        public async 
     }
 }
