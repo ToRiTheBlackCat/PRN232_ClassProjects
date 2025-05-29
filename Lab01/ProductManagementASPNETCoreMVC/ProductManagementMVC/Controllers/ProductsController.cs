@@ -1,5 +1,6 @@
 ﻿using BusinessObjects;
 using DataAccessObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -28,6 +29,7 @@ namespace ProductManagementMVC.Controllers
 
         }
         // GET: Products
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var listProduct = new List<Product>();

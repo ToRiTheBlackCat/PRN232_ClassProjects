@@ -88,7 +88,7 @@ namespace DataAccessObjects
         public static Product? GetProductById(int id)
         {
             using var db = new MyStoreDBContext();
-            return db.Products.FirstOrDefault(c => c.ProductId.Equals(id));
+            return db.Products.Include(x => x.Category).FirstOrDefault(c => c.ProductId.Equals(id));
         }
     }
 }

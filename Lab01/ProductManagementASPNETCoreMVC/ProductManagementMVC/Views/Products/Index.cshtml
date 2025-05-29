@@ -1,66 +1,11 @@
-﻿@* @model IEnumerable<BusinessObjects.Product>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ProductName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitsInStock)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.UnitPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ProductName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitsInStock)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.UnitPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryName)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
- *@
-
-
-@model IEnumerable<BusinessObjects.Product>
+﻿@model IEnumerable<BusinessObjects.Product>
 
 @{
     ViewData["Title"] = "Product List";
 }
 
-<h2 class="mb-4">Product List</h2>
+<h2 class="text-center text-uppercase fw-semibold mb-4  pb-2"> Product List</h2>
+
 
 <p>
     <a class="btn btn-primary mb-4" asp-action="Create">Create New</a>
@@ -73,26 +18,18 @@
             <div class="col-md-4 mb-4">
                 <div class="card h-100 text-center shadow-sm">
                     <div class="card-header bg-success py-2"></div>
-                    <img src="https://via.placeholder.com/200x150" alt="Product Image" class="card-img-top p-3" style="height: 200px; object-fit: contain;">
+                    <img src="https://hangthanhlyhanoi.com/profiles/hangthanhlyhanoicom/uploads/attach/1415546367_20141031img0306.jpg" alt="Product Image" class="card-img-top p-3" style="height: 200px; object-fit: contain;">
 
                     <div class="card-body">
-                        <h5 class="card-title fw-bold">@item.ProductName</h5>
-                        <p class="text-primary fs-5 fw-bold">@item.UnitPrice?.ToString("0.00") VND</p>
+                        <h3 class="card-title fw-bold">@item.ProductName</h3>
+                        <p class="text-primary fs-5 fw-bold">@item.UnitPrice?.ToString("0") VND</p>
+                        <h5 class="card-title fw-bold text-warning">@item.UnitsInStock left</h5>
+                        <h5 class="card-title fw-bold text-secondary">Type: @item.Category.CategoryName</h5>
 
-                        <div>
-                            <span class="text-warning">★★★★★</span>
-                            <span class="text-muted">1000 purchases</span>
-                        </div>
 
                         <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-success w-100 mb-2">View Detail</a>
                         <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-purple w-100">Edit Product</a>
                     </div>
-
-                    @* <div class="card-footer bg-transparent">
-                        <a  class="btn btn-sm btn-outline-primary me-1">Edit</a>
-                        <a  class="btn btn-sm btn-outline-info me-1">Details</a>
-                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-sm btn-outline-danger">Delete</a>
-                    </div> *@
                 </div>
             </div>
         }
