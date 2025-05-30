@@ -20,6 +20,8 @@ namespace Repositories
 
         public void SaveProduct(Product p) => ProductDAO.SaveProduct(p);
 
+        public async Task<List<Product>> SearchProducts(string? productName, string? categoryName) => await ProductDAO.SearchProducts(productName, categoryName);
+
         public void UpdateProduct(Product p) => ProductDAO.UpdateProduct(p);
     }
 }

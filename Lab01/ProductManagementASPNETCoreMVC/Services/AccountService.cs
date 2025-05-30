@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using ProductManagementMVC.Models;
 using Repositories;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,11 @@ namespace Services
         public AccountService()
         {
             iAccountRepository = new AccountRepository();
+        }
+
+        public AccountMember? Authenticate(LoginRequest request)
+        {
+            return iAccountRepository.GetAccountByEmailAndPassword(request.EmailAddress, request.MemberPassword);
         }
 
         public void DeleteAccount(AccountMember acc)

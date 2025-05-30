@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using ProductManagementMVC.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,8 @@ namespace Services
         void DeleteAccount(AccountMember acc);
         void UpdateAccount(AccountMember acc);
         AccountMember? GetAccountById(string accountId);
+        AccountMember? Authenticate(LoginRequest request);
+
         List<AccountMember> GetAccounts();
     }
 }
