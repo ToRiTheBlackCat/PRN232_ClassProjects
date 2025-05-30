@@ -125,11 +125,8 @@ namespace ProductManagementMVC.Controllers
 
             using (var httpClient = new HttpClient())
             {
-                //var jsonContent = JsonConvert.SerializeObject(product);
-                //var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products" + id))
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -140,16 +137,12 @@ namespace ProductManagementMVC.Controllers
                         {
                             return NotFound();
                         }
+
+                        var categoryList = await GetCategoryList();
+                        ViewData["CategoryId"] = new SelectList(categoryList, "CategoryId", "CategoryName", foundProduct.CategoryId);
                     }
                 }
             }
-
-
-
-
-            var categoryList = await GetCategoryList();
-            ViewData["CategoryId"] = new SelectList(categoryList, "CategoryId", "CategoryName", foundProduct.CategoryId);
-
             return View(foundProduct);
         }
 
@@ -271,7 +264,7 @@ namespace ProductManagementMVC.Controllers
             var categoryList = new List<Category>();
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "GetCategories"))
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Categories"))
                 {
                     if (response.IsSuccessStatusCode)
                     {
