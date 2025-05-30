@@ -13,6 +13,7 @@ namespace Services
         void DeleteProduct(Product p);
         void UpdateProduct(Product p);
         List<Product> GetProducts();
+        Task<List<Product>> SearchProducts(string? productName, string? categoryName, int currentPage, int pageSize);
         Product? GetProductById(int id);
     }
 }

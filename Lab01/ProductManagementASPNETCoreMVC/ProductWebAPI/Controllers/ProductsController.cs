@@ -29,6 +29,12 @@ namespace ProductWebAPI.Controllers
             return _productService.GetProducts();
         }
 
+        [HttpGet("search")]
+        public async Task<List<Product>> SearchProduct(string? productName, string? categoryName, int currentPage, int pageSize)
+        {
+            return await _productService.SearchProducts(productName, categoryName, currentPage, pageSize);
+        }
+
         // GET: api/Products/5
         [HttpGet("{id}")]
         public ActionResult<Product> GetProduct(int id)

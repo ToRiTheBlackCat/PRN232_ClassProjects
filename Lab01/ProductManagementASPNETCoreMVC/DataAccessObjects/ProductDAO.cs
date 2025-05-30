@@ -90,5 +90,22 @@ namespace DataAccessObjects
             using var db = new MyStoreDBContext();
             return db.Products.Include(x => x.Category).FirstOrDefault(c => c.ProductId.Equals(id));
         }
+        public static async Task<List<Product>> SearchProducts(string? productName, string? categoryName)
+        {
+            using var db = new MyStoreDBContext();
+
+
+
+            var productList = db.Products
+                .Include(x => x.Category)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(productName))
+                productList = productList.Where(x => x.ProductName.Contains(productName));
+            if (!string.IsNullOrEmpty(categoryName))
+                productList = productList.Where(x => x.Category.CategoryName.Contains(categoryName));
+
+            return await productList.ToListAsync();
+        }
     }
 }

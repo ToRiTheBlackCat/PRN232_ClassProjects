@@ -49,6 +49,26 @@ namespace ProductManagementMVC.Controllers
             return View(listProduct);
         }
 
+        //Products/search?productName=a&categoryName=a&currentPage=1&pageSize=1
+        public async Task<IActionResult> Search(string? productName, string? categoryName, int currentPage)
+        {
+            currentPage = currentPage == 0 ? 1 : currentPage;
+
+            var listProduct = new List<Product>();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/search?productName=" + productName + "&categoryName=" + categoryName + "&currentPage=" + currentPage + "&pageSize=" + "6"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        listProduct = JsonConvert.DeserializeObject<List<Product>>(responseBody);
+                    }
+                }
+            }
+            return View("Index", listProduct);
+        }
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -158,36 +178,25 @@ namespace ProductManagementMVC.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+
+            using (var httpClient = new HttpClient())
             {
+                var jsonContent = JsonConvert.SerializeObject(product);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                using (var httpClient = new HttpClient())
+
+                using (var response = await httpClient.PutAsync(ApiUrlConstant.APIEndPoint + "Products/" + id, content))
                 {
-                    var jsonContent = JsonConvert.SerializeObject(product);
-                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-
-                    using (var response = await httpClient.PutAsync(ApiUrlConstant.APIEndPoint + "Products" + id, content))
+                    if (response.IsSuccessStatusCode)
                     {
-                        if (response.IsSuccessStatusCode)
-                        {
-                            var responseBody = await response.Content.ReadAsStringAsync();
-                            var updatedProduct = JsonConvert.DeserializeObject<Product>(responseBody);
-
-                            if (updatedProduct != null)
-                            {
-                                return View(product);
-                            }
-                        }
+                        return RedirectToAction(nameof(Index));
                     }
                 }
-
-                return RedirectToAction(nameof(Index));
             }
-
-            var categoryList = await GetCategoryList();
-            ViewData["CategoryId"] = new SelectList(categoryList, "CategoryId", "CategoryName", product.CategoryId);
-            return View(product);
+            return NotFound();
         }
 
         // GET: Products/Delete/5
@@ -202,7 +211,7 @@ namespace ProductManagementMVC.Controllers
             using (var httpClient = new HttpClient())
             {
 
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products" + id))
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -228,7 +237,7 @@ namespace ProductManagementMVC.Controllers
             {
                 var foundProduct = new Product();
 
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products" + id))
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {
@@ -242,7 +251,7 @@ namespace ProductManagementMVC.Controllers
                     }
                 }
 
-                using (var response = await httpClient.DeleteAsync(ApiUrlConstant.APIEndPoint + "Products" + id))
+                using (var response = await httpClient.DeleteAsync(ApiUrlConstant.APIEndPoint + "Products/" + id))
                 {
                     if (response.IsSuccessStatusCode)
                     {

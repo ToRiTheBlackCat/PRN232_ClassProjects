@@ -35,6 +35,15 @@ namespace Services
             iProductRepository.SaveProduct(p);
         }
 
+        public async Task<List<Product>> SearchProducts(string? productName, string? categoryName, int currentPage, int pageSize)
+        {
+            var productList = await iProductRepository.SearchProducts(productName, categoryName);
+
+            var result = productList.Skip((currentPage - 1) * pageSize).Take(pageSize).ToList();
+
+            return result;
+        }
+
         public void UpdateProduct(Product p)
         {
             iProductRepository.UpdateProduct(p);
