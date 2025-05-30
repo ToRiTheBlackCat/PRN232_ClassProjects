@@ -12,61 +12,54 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using X.PagedList;
+using X.PagedList.Extensions;
+
 
 namespace ProductManagementMVC.Controllers
 {
     public class ProductsController : Controller
     {
-        //private readonly IProductService _context;
-
-        //public ProductsController(MyStoreDBContext context)
-        //{
-        //    _context = context;
-        //}
-
         public ProductsController()
         {
 
         }
         // GET: Products
         [Authorize]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? productName, string? categoryName, int page)
         {
+            page = page == 0 ? 1 : page;
             var listProduct = new List<Product>();
+
             using (var httpClient = new HttpClient())
             {
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products"))
+                if (string.IsNullOrEmpty(productName) && string.IsNullOrEmpty(categoryName))
                 {
-                    if (response.IsSuccessStatusCode)
+                    using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products"))
                     {
-                        var responseBody = await response.Content.ReadAsStringAsync();
-                        listProduct = JsonConvert.DeserializeObject<List<Product>>(responseBody);
-
-
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseBody = await response.Content.ReadAsStringAsync();
+                            listProduct = JsonConvert.DeserializeObject<List<Product>>(responseBody);
+                        }
+                    }
+                }
+                else
+                {
+                    using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/search?productName=" + productName + "&categoryName=" + categoryName + "&currentPage=" + page + "&pageSize=" + "6"))
+                    {
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var responseBody = await response.Content.ReadAsStringAsync();
+                            listProduct = JsonConvert.DeserializeObject<List<Product>>(responseBody);
+                        }
                     }
                 }
             }
-            return View(listProduct);
-        }
 
-        //Products/search?productName=a&categoryName=a&currentPage=1&pageSize=1
-        public async Task<IActionResult> Search(string? productName, string? categoryName, int currentPage)
-        {
-            currentPage = currentPage == 0 ? 1 : currentPage;
 
-            var listProduct = new List<Product>();
-            using (var httpClient = new HttpClient())
-            {
-                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/search?productName=" + productName + "&categoryName=" + categoryName + "&currentPage=" + currentPage + "&pageSize=" + "6"))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseBody = await response.Content.ReadAsStringAsync();
-                        listProduct = JsonConvert.DeserializeObject<List<Product>>(responseBody);
-                    }
-                }
-            }
-            return View("Index", listProduct);
+            var pagedList = listProduct?.ToPagedList(page, 6);
+            return View(pagedList);
         }
 
         // GET: Products/Details/5
@@ -110,6 +103,12 @@ namespace ProductManagementMVC.Controllers
 
             if (ModelState.IsValid)
             {
+                if (await ProductExists(product.ProductId))
+                {
+                    ModelState.AddModelError("ProductId", "ProductId already exists. Please use another ProductId.");
+                    return View(product);
+                }
+
                 using (var httpClient = new HttpClient())
                 {
                     var jsonContent = JsonConvert.SerializeObject(product);
@@ -263,10 +262,22 @@ namespace ProductManagementMVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        //private bool ProductExists(int id)
-        //{
-        //    return _context.Products.Any(e => e.ProductId == id);
-        //}
+        private async Task<bool> ProductExists(int id)
+        {
+            var foundProduct = new Product();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(ApiUrlConstant.APIEndPoint + "Products/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        foundProduct = JsonConvert.DeserializeObject<Product>(responseBody);
+                    }
+                }
+            }
+            return foundProduct != null ? true : false;
+        }
 
         private async Task<List<Category>?> GetCategoryList()
         {

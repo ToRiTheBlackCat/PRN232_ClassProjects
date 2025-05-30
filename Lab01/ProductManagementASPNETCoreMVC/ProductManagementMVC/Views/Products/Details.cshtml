@@ -77,6 +77,11 @@
         color: white;
     }
 
+    .btn-danger-custom {
+        background: linear-gradient(to right, red, #eb3458);
+        color: white;
+    }
+
     .btn-secondary-custom {
         background: #f0f0f0;
         color: #333;
@@ -108,6 +113,7 @@
 
         <div class="action-buttons">
             <a asp-action="Edit" asp-route-id="@Model?.ProductId" class="btn-custom btn-primary-custom">Update</a>
+            <a asp-action="Delete" asp-route-id="@Model?.ProductId" class="btn-custom btn-danger-custom">Delete Product</a>
             <a asp-action="Index" class="btn-custom btn-secondary-custom">Back</a>
         </div>
     </div>

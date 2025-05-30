@@ -1,23 +1,46 @@
-﻿@model IEnumerable<BusinessObjects.Product>
-
+﻿@* @model IEnumerable<BusinessObjects.Product> *@
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+@model X.PagedList.IPagedList<BusinessObjects.Product>
 @{
     ViewData["Title"] = "Product List";
 }
 
+<style>
+    .btn-purple {
+        background-color: #4B0082;
+        color: white;
+    }
+
+        .btn-purple:hover {
+            background-color: #5e22a3;
+        }
+
+    .btn-red {
+        background-color: red;
+        color: white;
+    }
+
+        .btn-red:hover {
+            background-color: #eb3458;
+        }
+</style>
 <h2 class="text-center text-uppercase fw-semibold mb-4 pt-2  pb-2"> Product List</h2>
 
 <div class="d-flex justify-content-center">
-    <form asp-action="Search" method="get" class="row g-2 align-items-center">
+    <form asp-action="Index" class="row g-2 align-items-center">
         <div class="col-auto">
             <label for="productName" class="form-label mb-0">ProductName</label>
-            <input type="text" class="form-control" id="productName" name="productName">
+            <input type="text" class="form-control" id="productName" name="productName" value="@Context.Request.Query["productName"]">
+
         </div>
         <div class="col-auto">
             <label for="categoryName" class="form-label mb-0">CategoryName</label>
-            <input type="text" class="form-control" id="categoryName" name="categoryName">
+            <input type="text" class="form-control" id="categoryName" name="categoryName" value="@Context.Request.Query["categoryName"]">
+
         </div>
         <div class="col-auto d-flex align-items-end gap-2 mt-4">
-            <button type="submit"  class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary">Search</button>
             <a asp-action="Create" class="btn btn-danger">Create new</a>
         </div>
     </form>
@@ -48,22 +71,17 @@
     </div>
 </div>
 
-<style>
-    .btn-purple {
-        background-color: #4B0082;
-        color: white;
-    }
-
-        .btn-purple:hover {
-            background-color: #5e22a3;
-        }
-
-    .btn-red {
-        background-color: red;
-        color: white;
-    }
-
-        .btn-red:hover {
-            background-color: #eb3458;
-        }
-</style>
+<!-- Pagination -->
+<div class="d-flex justify-content-center mt-4">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+        {
+            page = page,
+            productName = Context.Request.Query["productName"],
+            categoryName = Context.Request.Query["categoryName"]
+        }),
+            new PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item", "mx-2" },
+        PageClasses = new[] { "page-link" }
+    })
+</div>
