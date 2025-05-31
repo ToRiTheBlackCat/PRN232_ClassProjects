@@ -6,4 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FUNewsManagementSystem_BE.API\FUNewsManagementSystem_BE.API.csproj" />
+  </ItemGroup>
+
 </Project>
