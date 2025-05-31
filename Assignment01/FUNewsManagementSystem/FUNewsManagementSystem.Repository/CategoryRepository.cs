@@ -27,6 +27,14 @@ namespace FUNewsManagementSystem.Repository
 
             return false;
         }
+        public async Task<Category> GetCategoryByIdAsync(short id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.InverseParentCategory)
+                .Include(c => c.NewsArticles)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
+            return category;
+        }
 
         public async Task<List<Category>> GetCategories()
         {

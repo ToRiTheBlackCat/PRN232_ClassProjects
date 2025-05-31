@@ -12,6 +12,15 @@ namespace FUNewsManagementSystem.Service
     {
         private readonly CategoryRepository _categoryRepository;
         public CategoryService() => _categoryRepository = new CategoryRepository();
+
+        public async Task<Category> GetCategoryByIdAsync(short id)
+        {
+            return await _categoryRepository.GetCategoryByIdAsync(id);
+        }
+        public async Task<int> Create (Category category)
+        {
+            return await _categoryRepository.CreateAsync(category);
+        }
         public async Task<List<Category>> GetCategoriesAsync()
         {
             return await _categoryRepository.GetCategories();
