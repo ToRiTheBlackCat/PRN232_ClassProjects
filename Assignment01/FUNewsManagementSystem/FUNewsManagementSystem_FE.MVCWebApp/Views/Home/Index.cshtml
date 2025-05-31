@@ -5,21 +5,34 @@
         <div class="row">
             <div class="col-lg-8">
                 <h3>Active News</h3>
+                <div class="search-bar mb-30">
+                    <form asp-controller="Home" asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchQuery" class="form-control" placeholder="Search news articles..." value="@ViewBag.CurrentSearchQuery" />
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
                 <div class="row">
                     @foreach (var news in Model)
                     {
-                        <div class="col-lg-6 col-md-6">
-                            <div class="single-what-news mb-100">
-                                <div class="what-img">
-                                    <img src="~/img/news-placeholder.jpg" alt="@news.NewsTitle" /> <!-- optional image -->
-                                </div>
-                                <div class="what-cap">
-                                    <span class="color1">Category ID: @news.CategoryId</span>
-                                    <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@news.NewsArticleId">@news.NewsTitle</a></h4>
-                                    <p>@news.Headline</p>
+                        if (news.NewsStatus == true)
+                        {
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-what-news mb-100">
+                                    <div class="what-img">
+                                        <img src="~/img/news-placeholder.jpg" alt="@news.NewsTitle" /> <!-- optional image -->
+                                    </div>
+                                    <div class="what-cap">
+                                        <span class="color1">Category ID: @news.CategoryId</span>
+                                        <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@news.NewsArticleId">@news.NewsTitle</a></h4>
+                                        <p>@news.Headline</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        }
                     }
                 </div>
             </div>

@@ -17,12 +17,22 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
-        public async Task<IActionResult> IndexAsync()
+        public async Task<IActionResult> IndexAsync(string? searchQuery)
         {
             try
             {
                 var client = _httpClientFactory.CreateClient("ApiClient");
-                var response = await client.GetAsync("NewsArticle/GetAll");
+                string requestUri;
+
+                if (string.IsNullOrEmpty(searchQuery))
+                {
+                    requestUri = "NewsArticle/GetAll"; // Fetch all articles
+                }
+                else
+                {
+                    requestUri = $"NewsArticle/Search?newsTitle={Uri.EscapeDataString(searchQuery)}"; // Search articles
+                }
+                var response = await client.GetAsync(requestUri);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -32,7 +42,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
                     {
                         return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
                     }
-                    
+
                     return View(wrappedModel.Values);
                 }
 
@@ -54,6 +64,26 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public async Task<IActionResult> Detail(string id)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("ApiClient");
+                var response = await client.GetAsync($"NewsArticle/{id}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var article = await response.Content.ReadFromJsonAsync<NewsArticleModel>();
+                    return View(article);
+                }
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching news article details");
+                return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            }
         }
     }
 }

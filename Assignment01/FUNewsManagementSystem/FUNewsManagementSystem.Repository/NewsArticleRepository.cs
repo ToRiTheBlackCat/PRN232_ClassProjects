@@ -29,6 +29,8 @@ namespace FUNewsManagementSystem.Repository
         public new async Task<NewsArticleModel?> GetById(string id)
         {
             var itemList = await _context.NewsArticles
+                .Include(x => x.Tags) 
+                .Include(x => x.Category)
                 .FirstOrDefaultAsync(x => x.NewsArticleId.Equals(id));
 
             return itemList;
@@ -50,5 +52,16 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
+        public async Task<List<NewsArticleModel>> SearchTitle(string? newTitle)
+        {
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Include(x => x.Category)
+                .Where(x => string.IsNullOrEmpty(newTitle) || x.NewsTitle.Contains(newTitle))
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+            return itemList;
+
+        }
     }
 }

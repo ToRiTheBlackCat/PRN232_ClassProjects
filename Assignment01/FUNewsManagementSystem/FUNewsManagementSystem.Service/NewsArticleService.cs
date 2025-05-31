@@ -22,7 +22,7 @@ namespace FUNewsManagementSystem.Service
 
         public async Task<List<NewsArticleModel>?> SearchAsync(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
-            return await _newsArticleRepository.Search(newsTitle, headline, newsContent, categoryName);
+            return await _newsArticleRepository.SearchTitle(newsTitle/*, headline, newsContent, categoryName*/);
         }
 
         public async Task<NewsArticleModel?> GetByIdAsync(string id)
