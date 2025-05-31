@@ -1,8 +1,28 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="whats-news-area pt-50 pb-20">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3>Active News</h3>
+                <div class="row">
+                    @foreach (var news in Model)
+                    {
+                        <div class="col-lg-6 col-md-6">
+                            <div class="single-what-news mb-100">
+                                <div class="what-img">
+                                    <img src="~/img/news-placeholder.jpg" alt="@news.NewsTitle" /> <!-- optional image -->
+                                </div>
+                                <div class="what-cap">
+                                    <span class="color1">Category ID: @news.CategoryId</span>
+                                    <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@news.NewsArticleId">@news.NewsTitle</a></h4>
+                                    <p>@news.Headline</p>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

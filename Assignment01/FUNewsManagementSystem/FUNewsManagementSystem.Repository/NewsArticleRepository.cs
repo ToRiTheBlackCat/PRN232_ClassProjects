@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Repository
 {
-    public class NewsArticleRepository : GenericRepository<NewsArticle>
+    public class NewsArticleRepository : GenericRepository<NewsArticleModel>
     {
         public NewsArticleRepository()
         {
 
         }
 
-        public new async Task<List<NewsArticle>?> GetAll()
+        public new async Task<List<NewsArticleModel>?> GetAll()
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
@@ -26,7 +26,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public new async Task<NewsArticle?> GetById(string id)
+        public new async Task<NewsArticleModel?> GetById(string id)
         {
             var itemList = await _context.NewsArticles
                 .FirstOrDefaultAsync(x => x.NewsArticleId.Equals(id));
@@ -34,7 +34,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticle>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
+        public async Task<List<NewsArticleModel>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)

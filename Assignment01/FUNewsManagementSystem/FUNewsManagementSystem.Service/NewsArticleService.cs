@@ -15,22 +15,22 @@ namespace FUNewsManagementSystem.Service
         {
             _newsArticleRepository = new NewsArticleRepository();
         }
-        public async Task<List<NewsArticle>?> GetAllAsync()
+        public async Task<List<NewsArticleModel>?> GetAllAsync()
         {
             return await _newsArticleRepository.GetAll();
         }
 
-        public async Task<List<NewsArticle>?> SearchAsync(string? newsTitle, string? headline, string? newsContent, string? categoryName)
+        public async Task<List<NewsArticleModel>?> SearchAsync(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
             return await _newsArticleRepository.Search(newsTitle, headline, newsContent, categoryName);
         }
 
-        public async Task<NewsArticle?> GetByIdAsync(string id)
+        public async Task<NewsArticleModel?> GetByIdAsync(string id)
         {
             return await _newsArticleRepository.GetById(id);
         }
 
-        public async Task<bool> AddAsync(NewsArticle newsArticle)
+        public async Task<bool> AddAsync(NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
             {
@@ -40,7 +40,7 @@ namespace FUNewsManagementSystem.Service
             return true;
         }
 
-        public async Task<bool> UpdateAsync(NewsArticle newsArticle)
+        public async Task<bool> UpdateAsync(NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
             {
@@ -50,7 +50,7 @@ namespace FUNewsManagementSystem.Service
             return true;
         }
 
-        public async Task<bool> DeleteAsync(NewsArticle newsArticle)
+        public async Task<bool> DeleteAsync(NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
             {
