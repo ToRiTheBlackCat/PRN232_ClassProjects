@@ -1,5 +1,6 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,17 @@ namespace FUNewsManagementSystem.Repository
             }
 
             return false;
+        }
+
+        public async Task<List<Category>> GetCategories()
+        {
+            var categories = await _context.Categories 
+                .Include(c => c.InverseParentCategory)
+                .Include(c => c.NewsArticles)
+                .Where(c => c.IsActive == true)
+                .OrderBy(c => c.CategoryName)
+                .ToListAsync();
+            return categories;
         }
     }
 }

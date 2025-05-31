@@ -1,5 +1,6 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,12 @@ namespace FUNewsManagementSystem.Repository
             }
 
             return false;
+        }
+
+        public async Task<SystemAccount?> GetSystemAccount (string email, string password)
+        {
+            var account = await _context.SystemAccounts.FirstOrDefaultAsync(u => u.AccountEmail == email && u.AccountPassword == password);
+            return account;
         }
     }
 }
