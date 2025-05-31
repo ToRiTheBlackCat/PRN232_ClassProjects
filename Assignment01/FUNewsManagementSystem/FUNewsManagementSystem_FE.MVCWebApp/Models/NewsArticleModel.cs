@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace FUNewsManagementSystem_FE.MVCWebApp.Models
 {
@@ -26,6 +27,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Models
         public short? UpdatedById { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
-        public ICollection<TagModel> Tags { get; set; } = new List<TagModel>();
+        [JsonPropertyName("tags")]
+        public ReferencePreservedList<TagModel> Tags { get; set; }
     }
 }

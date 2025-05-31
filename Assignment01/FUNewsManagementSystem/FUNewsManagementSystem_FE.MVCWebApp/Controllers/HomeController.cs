@@ -2,6 +2,7 @@ using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem_FE.MVCWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using NewsArticleModel = FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel;
 
 namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 {
@@ -25,34 +26,14 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var wrappedModel = await response.Content.ReadFromJsonAsync<ReferencePreservedList<FUNewsManagementSystem.Repository.Models.NewsArticleModel>>();
+                    var wrappedModel = await response.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
 
                     if (wrappedModel?.Values == null) // Check if values exist
                     {
                         return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
                     }
-
-                    var feModel = wrappedModel.Values.Select(b => new Models.NewsArticleModel
-                    {
-                        NewsArticleId = b.NewsArticleId,
-                        NewsTitle = b.NewsTitle,
-                        Headline = b.Headline,
-                        CreatedDate = b.CreatedDate,
-                        NewsContent = b.NewsContent,
-                        NewsSource = b.NewsSource,
-                        CategoryId = b.CategoryId,
-                        NewsStatus = b.NewsStatus,
-                        CreatedById = b.CreatedById,
-                        UpdatedById = b.UpdatedById,
-                        ModifiedDate = b.ModifiedDate,
-                        Tags = b.Tags.Select(t => new Models.TagModel
-                        {
-                            TagId = t.TagId,
-                            TagName = t.TagName
-                        }).ToList()
-                    }).ToList();
-
-                    return View(feModel.Where(x => x.NewsStatus == true).ToList());
+                    
+                    return View(wrappedModel.Values);
                 }
 
                 return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
