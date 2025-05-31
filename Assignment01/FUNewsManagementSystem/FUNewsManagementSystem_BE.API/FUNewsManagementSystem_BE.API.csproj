@@ -10,4 +10,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\FUNewsManagementSystem.Repository\FUNewsManagementSystem.Repository.csproj" />
+    <ProjectReference Include="..\FUNewsManagementSystem.Service\FUNewsManagementSystem.Service.csproj" />
+  </ItemGroup>
+
 </Project>
