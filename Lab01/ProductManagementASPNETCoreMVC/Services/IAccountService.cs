@@ -1,4 +1,5 @@
 ﻿using BusinessObjects;
+using BusinessObjects.ViewModel.Accounts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,6 @@ namespace Services
         void UpdateAccount(AccountMember acc);
         AccountMember? GetAccountById(string accountId);
         List<AccountMember> GetAccounts();
+        PaginatedAccountMembers SearchAccount(string fullName, string email, int roleId, int pageNum);
     }
 }

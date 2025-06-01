@@ -1,0 +1,79 @@
+﻿@model BusinessObjects.ViewModel.Accounts.AccountMemberFormModel
+
+@{
+    ViewData["Title"] = "Edit Member Info";
+}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-sm rounded-4">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Edit Profile</h4>
+                </div>
+
+                <div class="card-body">
+                    @if (TempData["Message"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["Message"]</div>
+                    }
+
+                    @using (Html.BeginForm("Edit", "AccountMembers"))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.MemberId)
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Enter full name" })
+                            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.EmailAddress, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control", placeholder = "Enter email" })
+                            @Html.ValidationMessageFor(m => m.EmailAddress, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.Password, new { @class = "form-control", placeholder = "Enter password" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
+                            @Html.TextBoxFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm password" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.MemberRole, new { @class = "form-label" })
+                            @Html.DropDownListFor(m => m.MemberRole, (IEnumerable<SelectListItem>)ViewBag.RoleList, "Select a role", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.MemberId, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                        <hr />
+                        <div class="d-grid">
+                            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+                        </div>
+                        <hr />
+                        <div class="d-grid">
+                            <a asp-action="Delete" asp-route-id="@Model.MemberId" class="btn btn-danger">Delete Account</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -15,25 +15,25 @@ namespace ProductWebAPI.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICatergoryService _context;
+        private readonly ICatergoryService _catergory;
 
-        public CategoriesController(ICatergoryService context)
-        {
-            _context = context;
+        public CategoriesController(ICatergoryService catergory)
+        { 
+            _catergory = catergory;
         }
 
         // GET: api/Categories
         [HttpGet]
         public ActionResult<IEnumerable<Category>> GetCategories()
         {
-            return _context.GetCategories();
+            return _catergory.GetCategories();
         }
 
         // GET: api/Categories/5
         [HttpGet("{id}")]
         public ActionResult<Category> GetCategory(int id)
         {
-            var category = _context.GetCategoryById(id);
+            var category = _catergory.GetCategoryById(id);
 
             if (category == null)
             {
@@ -55,7 +55,7 @@ namespace ProductWebAPI.Controllers
 
             try
             {
-                _context.UpdateCategory(category);
+                _catergory.UpdateCategory(category);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,7 +77,7 @@ namespace ProductWebAPI.Controllers
         [HttpPost]
         public ActionResult<Category> PostCategory(Category category)
         {
-            _context.SaveCategory(category);
+            _catergory.SaveCategory(category);
 
             return CreatedAtAction("GetCategory", new { id = category.CategoryId }, category);
         }
@@ -86,20 +86,20 @@ namespace ProductWebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteCategory(int id)
         {
-            var category = _context.GetCategoryById(id);
+            var category = _catergory.GetCategoryById(id);
             if (category == null)
             {
                 return NotFound();
             }
 
-            _context.DeleteCategory(category);
+            _catergory.DeleteCategory(category);
 
             return NoContent();
         }
 
         private bool CategoryExists(int id)
         {
-            var foundCategory = _context.GetCategoryById(id);
+            var foundCategory = _catergory.GetCategoryById(id);
             return foundCategory != null ? true : false;
         }
     }

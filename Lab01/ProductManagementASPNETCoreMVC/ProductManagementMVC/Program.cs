@@ -1,7 +1,12 @@
+using DataAccessObjects;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add services to the container.
+builder.Services.AddScoped<MyStoreDBContext>();
 
 var app = builder.Build();
 
@@ -22,6 +27,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=AccountMembers}/{action=Index}/{id?}");
 
 app.Run();

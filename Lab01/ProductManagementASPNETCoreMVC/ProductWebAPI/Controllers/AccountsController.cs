@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects;
 using DataAccessObjects;
 using Services;
+using BusinessObjects.ViewModel.Accounts;
+using System.Text.Json;
 
 namespace ProductWebAPI.Controllers
 {
@@ -15,25 +17,27 @@ namespace ProductWebAPI.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountService _context;
+        private readonly IAccountService _accountService;
 
-        public AccountsController(IAccountService context)
+        public AccountsController(IAccountService accountService)
         {
-            _context = context;
+            _accountService = accountService;
         }
 
         // GET: api/Account
         [HttpGet]
-        public ActionResult<IEnumerable<AccountMember>> GetAccountMembers()
+        public ActionResult<PaginatedAccountMembers> GetAccountMembers(string fullName = "", string email = "", int roleId = 0, int pageNum = 1)
         {
-            return _context.GetAccounts();
+            var result = _accountService.SearchAccount(fullName, email, roleId, pageNum);
+
+            return result;
         }
 
         // GET: api/Account/5
         [HttpGet("{id}")]
         public ActionResult<AccountMember> GetAccountMember(string id)
         {
-            var accountMember = _context.GetAccountById(id);
+            var accountMember = _accountService.GetAccountById(id);
 
             if (accountMember == null)
             {
@@ -55,7 +59,7 @@ namespace ProductWebAPI.Controllers
 
             try
             {
-                _context.UpdateAccount(accountMember);
+                _accountService.UpdateAccount(accountMember);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,7 +81,7 @@ namespace ProductWebAPI.Controllers
         [HttpPost]
         public ActionResult<AccountMember> PostAccountMember(AccountMember accountMember)
         {
-            _context.SaveAccount(accountMember);
+            _accountService.SaveAccount(accountMember);
 
             return CreatedAtAction("GetAccountMember", new { id = accountMember.MemberId }, accountMember);
         }
@@ -86,20 +90,20 @@ namespace ProductWebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteAccountMember(string id)
         {
-            var accountMember = _context.GetAccountById(id);
+            var accountMember = _accountService.GetAccountById(id);
             if (accountMember == null)
             {
                 return NotFound();
             }
 
-            _context.DeleteAccount(accountMember);
+            _accountService.DeleteAccount(accountMember);
 
             return NoContent();
         }
 
         private bool AccountMemberExists(string id)
         {
-            var foundAccount = _context.GetAccountById(id);
+            var foundAccount = _accountService.GetAccountById(id);
             return foundAccount != null ? true : false;
         }
     }
