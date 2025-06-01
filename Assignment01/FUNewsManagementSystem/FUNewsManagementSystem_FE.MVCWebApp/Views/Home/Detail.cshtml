@@ -1,0 +1,391 @@
+﻿@model FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel
+
+@{
+    ViewData["Title"] = Model?.NewsTitle ?? "News Article Detail";
+}
+
+<section class="news-article-detail pt-50 pb-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 offset-lg-1">
+                <article class="single-article-content">
+                    <h1 class="article-title">@Model.NewsTitle</h1>
+                    <p class="article-headline">@Model.Headline</p>
+
+                    <div class="article-meta mb-30">
+                        <span><i class="fa fa-calendar"></i> @Model.CreatedDate?.ToString("MMMM dd, yyyy")</span>
+                        @if (Model.Category != null)
+                        {
+                            <span><i class="fa fa-tag"></i> @Model.Category.CategoryName</span>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.NewsSource))
+                        {
+                            <span><i class="fa fa-globe"></i> Source: @Model.NewsSource</span>
+                        }
+                    </div>
+
+                    <div class="article-image mb-40">
+                        <img src="~/img/news-placeholder.jpg" alt="@Model.NewsTitle" class="img-fluid" />
+                    </div>
+
+                    <div class="article-content mb-50">
+                        <p>@Model.NewsContent</p>
+                    </div>
+
+                    @if (Model.Tags != null && Model.Tags.Values != null && Model.Tags.Values.Any())
+                    {
+                        <div class="article-tags">
+                            <i class="fa fa-tags"></i> Tags:
+                            @foreach (var tag in Model.Tags.Values)
+                            {
+                                <span class="badge badge-info mr-1">@tag.TagName</span>
+                            }
+                        </div>
+                    }
+
+                    <div class="article-footer mt-40">
+                        <p>Created by User ID: @Model.CreatedById on @Model.CreatedDate?.ToString("g")</p>
+                        @if (Model.UpdatedById.HasValue)
+                        {
+                            <p>Last updated by User ID: @Model.UpdatedById on @Model.ModifiedDate?.ToString("g")</p>
+                        }
+                    </div>
+                </article>
+
+                <div class="text-center mt-50">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back to News</a>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#updateNewsModal">
+                        <i class="fa fa-edit"></i> Update Article
+                    </button>
+                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteConfirmationModal">
+                        <i class="fa fa-trash"></i> Delete Article
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<div>
+    <h4>NewsArticleModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsArticleId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NewsArticleId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsTitle)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NewsTitle)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Headline)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Headline)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsContent)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NewsContent)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsSource)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NewsSource)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CategoryId)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CategoryId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NewsStatus)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NewsStatus)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.CreatedById)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.CreatedById)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.UpdatedById)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.UpdatedById)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.ModifiedDate)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.ModifiedDate)
+        </dd>
+    </dl>
+</div>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@* =========================== MODAL DEFINITION =========================== *@
+<div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog" aria-labelledby="updateNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateNewsModalLabel">Update News Article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* This form will be populated by JavaScript and submitted via AJAX *@
+                <form id="updateArticleForm">
+                    <input type="hidden" id="editNewsArticleId" name="NewsArticleId" value="@Model.NewsArticleId" />
+                    <input type="hidden" id="editCreatedById" name="CreatedById" value="@Model.CreatedById" />
+                    <input type="hidden" id="editCreatedDate" name="CreatedDate" value="@Model.CreatedDate?.ToString("o")" /> @* "o" for ISO 8601 format *@
+
+                    <div class="form-group">
+                        <label for="editNewsTitle">News Title</label>
+                        <input type="text" class="form-control" id="editNewsTitle" name="NewsTitle" value="@Model.NewsTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHeadline">Headline</label>
+                        <input type="text" class="form-control" id="editHeadline" name="Headline" value="@Model.Headline">
+                    </div>
+                    <div class="form-group">
+                        <label for="editNewsContent">News Content</label>
+                        <textarea class="form-control" id="editNewsContent" name="NewsContent" rows="5">@Model.NewsContent</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editNewsSource">News Source</label>
+                        <input type="text" class="form-control" id="editNewsSource" name="NewsSource" value="@Model.NewsSource">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategoryId">Category</label>
+                        <select class="form-control" id="editCategoryId" name="CategoryId">
+                            @if (Model.Category != null)
+                            {
+                                <option value="@Model.Category.CategoryId" selected>@Model.Category.CategoryName</option>
+                            }
+                            else
+                            {
+                                <option value="">Select a Category</option>
+                            }
+                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list *@
+                        </select>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="editNewsStatus" name="NewsStatus" @(Model.NewsStatus == true ? "checked" : "")>
+                        <label class="form-check-label" for="editNewsStatus">Is Active</label>
+                    </div>
+                    @* We will handle UpdatedById and ModifiedDate on the backend *@
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* =========================== MODAL DEFINITION (Delete Confirmation) =========================== *@
+<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmationModalLabel">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this news article: **@Model.NewsTitle**?
+                This action cannot be undone.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .single-article-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .article-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .article-headline {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        .article-meta span {
+            margin-right: 20px;
+            color: #888;
+            font-size: 0.9em;
+        }
+        .article-meta i {
+            margin-right: 5px;
+            color: #007bff; /* Primary color example */
+        }
+        .article-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .article-content p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: #444;
+        }
+        .article-tags .badge {
+            font-size: 0.9em;
+            padding: .5em .8em;
+            border-radius: 15px;
+        }
+        .article-footer {
+            font-size: 0.85em;
+            color: #999;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+    </style>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Function to load categories into the dropdown
+            function loadCategories(selectedCategoryId) {
+                var apiUrl = '/api/Category'; // Assuming your category API endpoint
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    success: function (data) {
+                        var categorySelect = $('#editCategoryId');
+                        categorySelect.empty();
+                        categorySelect.append($('<option>').val('').text('Select a Category')); // Default option
+
+                        var categories = data.$values || data; // Handle ReferencePreservedList or direct array
+
+                        $.each(categories, function (index, category) {
+                            categorySelect.append($('<option>', {
+                                value: category.categoryId,
+                                text: category.categoryName
+                            }));
+                        });
+
+                        if (selectedCategoryId) {
+                            categorySelect.val(selectedCategoryId);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading categories:", error);
+                        alert("Failed to load categories.");
+                    }
+                });
+            }
+
+            $('#updateNewsModal').on('show.bs.modal', function (event) {
+                var currentArticle = @Html.Raw(Json.Serialize(Model));
+
+                $('#editNewsArticleId').val(currentArticle.newsArticleId);
+                $('#editNewsTitle').val(currentArticle.newsTitle);
+                $('#editHeadline').val(currentArticle.headline);
+                $('#editNewsContent').val(currentArticle.newsContent);
+                $('#editNewsSource').val(currentArticle.newsSource);
+                $('#editCreatedById').val(currentArticle.createdById);
+                $('#editCreatedDate').val(currentArticle.createdDate);
+
+                $('#editNewsStatus').prop('checked', currentArticle.newsStatus);
+
+                loadCategories(currentArticle.categoryId);
+            });
+
+            $('#saveChangesBtn').on('click', function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    NewsArticleId: $('#editNewsArticleId').val(),
+                    NewsTitle: $('#editNewsTitle').val(),
+                    Headline: $('#editHeadline').val(),
+                    CreatedDate: $('#editCreatedDate').val(),
+                    NewsContent: $('#editNewsContent').val(),
+                    NewsSource: $('#editNewsSource').val(),
+                    CategoryId: $('#editCategoryId').val() ? parseInt($('#editCategoryId').val()) : null,
+                    NewsStatus: $('#editNewsStatus').is(':checked'),
+                    CreatedById: $('#editCreatedById').val() ? parseInt($('#editCreatedById').val()) : null,
+                };
+
+                if (!formData.NewsTitle) {
+                    alert("News Title is required.");
+                    return;
+                }
+
+                var articleId = formData.NewsArticleId;
+                var apiUrl = `/api/NewsArticle/Update/${articleId}`;
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        alert("Article updated successfully!");
+                        $('#updateNewsModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating article:", xhr.responseText);
+                        alert("Failed to update article. Check console for details.");
+                    }
+                });
+            });
+            // Handle delete confirmation button click
+            $('#confirmDeleteBtn').on('click', function () {
+                var articleId = '@Model.NewsArticleId'; // Get the ID from the model
+                var apiUrl = `/api/NewsArticle/${articleId}`; // Your DELETE API endpoint
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'DELETE',
+                    success: function (response) {
+                        alert("Article deleted successfully!");
+                        $('#deleteConfirmationModal').modal('hide');
+                        // Redirect to the Index page after successful deletion
+                        window.location.href = '@Url.Action("Index", "Home")';
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error deleting article:", xhr.responseText);
+                        alert("Failed to delete article. Check console for details.");
+                    }
+                });
+            });
+        });
+    </script>
+}
