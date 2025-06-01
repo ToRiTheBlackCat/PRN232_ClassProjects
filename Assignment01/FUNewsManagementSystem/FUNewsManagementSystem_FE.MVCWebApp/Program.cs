@@ -2,7 +2,7 @@ using FUNewsManagementSystem.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var configuration = builder.Configuration;
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -18,6 +18,7 @@ builder.Services.AddAuthentication()
 builder.Services.AddHttpClient("ApiClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:50013/api/");
+    var apiBaseUrl = configuration.GetValue<string>("ApiBaseUrl");
 });
 
 

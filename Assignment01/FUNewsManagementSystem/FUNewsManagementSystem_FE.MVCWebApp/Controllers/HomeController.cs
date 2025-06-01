@@ -10,11 +10,13 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
@@ -37,14 +39,14 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var wrappedModel = await response.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
+                    var wrappedModel = await response.Content.ReadFromJsonAsync<List<NewsArticleModel>>();
 
-                    if (wrappedModel?.Values == null) // Check if values exist
+                    if (wrappedModel == null) // Check if values exist
                     {
                         return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
                     }
 
-                    return View(wrappedModel.Values);
+                    return View(wrappedModel);
                 }
 
                 return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
@@ -73,6 +75,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             {
                 var client = _httpClientFactory.CreateClient("ApiClient");
                 var response = await client.GetAsync($"NewsArticle/{id}");
+                ViewBag.ApiBaseUrl = _configuration.GetValue<string>("ApiBaseUrl");
                 if (response.IsSuccessStatusCode)
                 {
                     var article = await response.Content.ReadFromJsonAsync<NewsArticleModel>();
@@ -134,10 +137,10 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
                 var articlesResponse = await client.GetAsync("NewsArticle/GetAll");
                 if (articlesResponse.IsSuccessStatusCode)
                 {
-                    var wrappedModel = await articlesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
-                    if (wrappedModel?.Values != null)
+                    var wrappedModel = await articlesResponse.Content.ReadFromJsonAsync<List<NewsArticleModel>>();
+                    if (wrappedModel != null)
                     {
-                        articles = wrappedModel.Values;
+                        articles = wrappedModel;
                     }
                 }
 

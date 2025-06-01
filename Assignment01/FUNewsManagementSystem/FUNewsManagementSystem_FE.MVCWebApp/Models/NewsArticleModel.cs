@@ -30,6 +30,6 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Models
         public DateTime? ModifiedDate { get; set; }
         public CategoryModel Category { get; set; }
         [JsonPropertyName("tags")]
-        public ReferencePreservedList<TagModel> Tags { get; set; }
+        public List<TagModel> Tags { get; set; }
     }
 }
