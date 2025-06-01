@@ -16,25 +16,30 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             _categoryService = categoryService;
         }
         [HttpPost("create")]
-        public async Task<ActionResult<CategoryModel>> CreateCategory(Category category)
+        public async Task<IActionResult> CreateC([FromBody] CategoryModel model)
         {
             try
             {
-                var newCategory = await _categoryService.Create(category);
-                if (newCategory > 0)
+                var category = new Category
                 {
+                    CategoryId = model.CategoryId,
+                    CategoryName = model.CategoryName,
+                    CategoryDesciption = model.CategoryDesciption,
+                    IsActive = model.IsActive
+                };
+
+                var result = await _categoryService.Create(category);
+                if (result > 0)
                     return Ok("Category created successfully.");
-                }
                 else
-                {
                     return BadRequest("Failed to create category.");
-                }
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Error creating category: {ex.Message}");
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
+
         [HttpGet]
         public async Task<ActionResult<List<CategoryModel>>> GetCategories()
         {
@@ -68,7 +73,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 var category = await _categoryService.GetCategoryByIdAsync(id); // Await added here
                 if (category != null)
                 {
-                    var result = await _categoryService.RemoveCategoryAsync(category);
+                    var result = await _categoryService.Remove(category);
                     if (result == true)
                     {
                         return Ok("Category removed successfully.");
@@ -86,6 +91,30 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, $"Error removing category: {ex.Message}");
+            }
+        }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateCategory([FromBody] CategoryModel model)
+        {
+            try
+            {
+                var existingCategory = await _categoryService.GetCategoryByIdAsync(model.CategoryId);
+                var category = new Category
+                {
+                    CategoryId = existingCategory.CategoryId,
+                    CategoryName = existingCategory.CategoryName,
+                    CategoryDesciption = existingCategory.CategoryDesciption,
+                    IsActive = existingCategory.IsActive
+                };
+                var result = await _categoryService.Update(category);
+                if (result > 0)
+                    return Ok("Category updated successfully.");
+                else
+                    return BadRequest("Failed to update category.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error: {ex.Message}");
             }
         }
     }

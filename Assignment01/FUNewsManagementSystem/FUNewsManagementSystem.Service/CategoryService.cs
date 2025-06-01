@@ -17,7 +17,7 @@ namespace FUNewsManagementSystem.Service
         {
             return await _categoryRepository.GetCategoryByIdAsync(id);
         }
-        public async Task<int> Create (Category category)
+        public async Task<int> Create(Category category)
         {
             return await _categoryRepository.CreateAsync(category);
         }
@@ -26,9 +26,14 @@ namespace FUNewsManagementSystem.Service
             return await _categoryRepository.GetCategories();
         }
 
-        public async Task<bool> RemoveCategoryAsync(Category category)
+        public async Task<bool> Remove(Category category)
         {
             return await _categoryRepository.RemoveWithCheckingAsync(category);
+        }
+
+        public async Task<int> Update(Category category)
+        {
+            return await _categoryRepository.UpdateAsync(category);
         }
     }
 }

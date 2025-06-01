@@ -37,7 +37,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> Create(Category categoryModel)
+        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDesciption,IsActive")] CategoryModel categoryModel)
         {
             try
             {
@@ -89,6 +89,36 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             {
                 ModelState.AddModelError("", $"Error removing category: {ex.Message}");
                 return RedirectToAction("Index");
+            }
+        }
+        [HttpPut("Edit/{id}")]
+        public async Task<IActionResult> Edit(short id, [Bind("CategoryId,CategoryName,CategoryDesciption,IsActive")] CategoryModel categoryModel)
+        {
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    using (var httpClient = new HttpClient())
+                    {
+                        var content = new StringContent(JsonConvert.SerializeObject(categoryModel), System.Text.Encoding.UTF8, "application/json");
+                        var response = await httpClient.PutAsync(ProjectConstant.APIEndPoint + "api/Categories/" + id, content);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToAction("Index");
+                        }
+                        else
+                        {
+                            ModelState.AddModelError("", "Failed to update category.");
+                            return View(categoryModel);
+                        }
+                    }
+                }
+                return View(categoryModel);
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error updating category: {ex.Message}");
+                return View(categoryModel);
             }
         }
     }
