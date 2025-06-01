@@ -55,6 +55,7 @@ namespace FUNewsManagementSystem.Repository
             if (string.IsNullOrEmpty(categoryName) || category == null)
             {
                 count = await _context.NewsArticles.CountAsync();
+                return count;
             }
 
             if ((category.ParentCategoryId == null || category.CategoryId == category.ParentCategoryId) || true) //topmost category or otherwise
@@ -68,6 +69,13 @@ namespace FUNewsManagementSystem.Repository
 
             }
             return count;
+        }
+
+        public async Task<int> GetTotalNewsCountByDate (DateTime fromDate, DateTime toDate)
+        {
+            return _context.NewsArticles
+                .Where(x => x.CreatedDate >= fromDate && x.CreatedDate < toDate.AddDays(1))
+                .Count();
         }
     }
 }

@@ -29,7 +29,12 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         public async Task<IActionResult> ListAllOrByName(string? accountName)
         {
             var item = await _serv.ListAccountsAsync(accountName);
-            return Ok(item);
+            return item == null
+                ? NotFound(new
+                {
+                    Message = "No account with that name exists (or no account in database)"
+                })
+                : Ok(item);
         }
 
         [HttpGet("{id}")]
@@ -37,17 +42,23 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return BadRequest(new
+                {
+                    Message = "Please provide an Id for search!",
+                });
             }
 
             var systemAccount = await _serv.GetAccountByIdAsync(id);
             return systemAccount == null
-                ? NotFound()
+                ? NotFound(new
+                {
+                    Message = $"Account with ID {id} not found!",
+                })
                 : Ok(systemAccount);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount(CreateAccountForm form)
+        public async Task<IActionResult> CreateAccount([FromForm] CreateAccountForm form)
         {
             var result = await _serv.CreateAccountAsync(_mapper.Map<SystemAccount>(form));
             switch (result)
@@ -56,8 +67,14 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                     var item = await _serv.GetAccountByNameAsync(form.AccountName);
                     return Ok(item);
 
-                case 0: return BadRequest();
-                case -1: return NotFound();
+                case 0: return BadRequest(new
+                {
+                    Message = "Email or Name already existed!",
+                });
+                case -1: return NotFound(new
+                {
+                    Message = "Account not found!",
+                });
             }
         }
     }

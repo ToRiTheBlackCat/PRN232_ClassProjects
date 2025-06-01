@@ -24,5 +24,9 @@ namespace FUNewsManagementSystem.Service
         {
             return await _repo.GetTotalNewsCount(cateName.Trim());
         }
+        public async Task<int> GetTotalNewsCountByDate(DateTime fromDate, DateTime toDate)
+        {
+            return await _repo.GetTotalNewsCountByDate(fromDate, toDate);
+        }
     }
 }
