@@ -1,7 +1,9 @@
-﻿namespace ProductManagementMVC.Constant
+﻿using static System.Net.WebRequestMethods;
+
+namespace ProductManagementMVC.Constant
 {
     public static class ApiUrlConstant
     {
-        public static string APIEndPoint = "https://localhost:7269/api/";
+        public static string APIEndPoint = "https://localhost:58026/api/";
     }
 }

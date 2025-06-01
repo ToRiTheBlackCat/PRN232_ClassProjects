@@ -14,6 +14,7 @@ using LoginRequest = ProductManagementMVC.Models.LoginRequest;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
+using BusinessObjects.ViewModel.Accounts;
 
 namespace ProductWebAPI.Controllers
 {
@@ -51,9 +52,9 @@ namespace ProductWebAPI.Controllers
 
         // GET: api/Account
         [HttpGet]
-        public ActionResult<IEnumerable<AccountMember>> GetAccountMembers()
+        public ActionResult<PaginatedAccountMembers> GetAccountMembers(string fullName = "", string email = "", int roleId = 0, int pageNum = 1)
         {
-            return _userService.GetAccounts();
+            return _userService.SearchAccount(fullName, email, roleId, pageNum);
         }
 
         // GET: api/Account/5

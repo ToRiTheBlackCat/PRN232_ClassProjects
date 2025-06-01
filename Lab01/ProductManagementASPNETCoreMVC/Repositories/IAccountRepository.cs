@@ -17,5 +17,6 @@ namespace Repositories
         AccountMember? GetAccountById(string accountId);
         AccountMember? GetAccountByEmailAndPassword(string email, string password);
 
+        List<AccountMember> SearchAccount(string fullName, string email, int roleId);
     }
 }

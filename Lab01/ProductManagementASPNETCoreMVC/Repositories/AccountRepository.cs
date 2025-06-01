@@ -23,5 +23,7 @@ namespace Repositories
         public void SaveAccount(AccountMember acc) => AccountDAO.SaveAccount(acc);
 
         public void UpdateAccount(AccountMember acc) => AccountDAO.UpdateAccount(acc);
+
+        public List<AccountMember> SearchAccount(string fullName, string email, int roleId) => AccountDAO.SearchAccount(fullName, email, roleId);
     }
 }

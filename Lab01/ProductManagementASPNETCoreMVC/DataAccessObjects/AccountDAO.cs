@@ -93,5 +93,16 @@ namespace DataAccessObjects
             using var db = new MyStoreDBContext();
             return db.AccountMembers.FirstOrDefault(c => c.EmailAddress.Equals(email) && c.MemberPassword.Equals(password));
         }
+        public static List<AccountMember> SearchAccount(string fullName, string email, int roleId)
+        {
+            using var db = new MyStoreDBContext();
+            var result = from member in db.AccountMembers
+                         where (string.IsNullOrEmpty(fullName) || member.FullName.Contains(fullName)) &&
+                               (string.IsNullOrEmpty(email) || member.EmailAddress.Contains(email)) &&
+                               (roleId == 0 || member.MemberRole == roleId)
+                         select member;
+
+            return result.ToList();
+        }
     }
 }
