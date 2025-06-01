@@ -8,12 +8,21 @@ using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Service
 {
-    public class CategoryService
+    public interface ICategoryService
+    {
+        Task<Category?> GetCategoryByIdAsync(short id);
+        Task<List<Category>> GetCategoriesAsync();
+        Task<int> Create(Category category);
+        Task<bool> Remove(Category category);
+        Task<int> Update(Category category);
+    }
+
+    public class CategoryService : ICategoryService
     {
         private readonly CategoryRepository _categoryRepository;
         public CategoryService() => _categoryRepository = new CategoryRepository();
 
-        public async Task<Category> GetCategoryByIdAsync(short id)
+        public async Task<Category?> GetCategoryByIdAsync(short id)
         {
             return await _categoryRepository.GetCategoryByIdAsync(id);
         }

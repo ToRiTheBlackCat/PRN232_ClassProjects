@@ -2,6 +2,6 @@
 {
     public class ProjectConstant
     {
-        public static string APIEndPoint = "https://localhost:64611/";
+        public static string APIEndPoint = "https://localhost:50013/api/";
     }
 }

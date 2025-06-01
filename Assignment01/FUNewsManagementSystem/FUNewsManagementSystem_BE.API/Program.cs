@@ -7,13 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<ICategoryService,CategoryService>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -2,6 +2,7 @@
 using FUNewsManagementSystem_FE.MVCWebApp.Constant;
 using FUNewsManagementSystem_FE.MVCWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using System.Text.Json;
 
@@ -9,117 +10,214 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 {
     public class CategoriesController : Controller
     {
-        [HttpGet]
+        //DONE
         public async Task<IActionResult> Index()
         {
             try
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "api/Categories");
+                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories");
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        var categories = JsonConvert.DeserializeObject<List<CategoryModel>>(jsonString);
+                        var categories = JsonConvert.DeserializeObject<List<Category>>(jsonString);
                         return View(categories);
                     }
-                    else
-                    {
-                        ModelState.AddModelError("", "Failed to retrieve categories.");
-                        return View(new List<CategoryModel>());
-                    }
+                    //else
+                    //{
+                    //    ModelState.AddModelError("", "Failed to retrieve categories.");
+                    //    return View(new List<Category>());
+                    //}
                 }
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Error retrieving categories: {ex.Message}");
-                return View(new List<CategoryModel>());
             }
+            return NotFound();
         }
-        [HttpPost]
-        public async Task<IActionResult> Create([Bind("CategoryId,CategoryName,CategoryDesciption,IsActive")] CategoryModel categoryModel)
+
+        //DONE
+        public async Task<IActionResult> Details(int? id)
         {
-            try
+
+            var foundCategory = new Category();
+            using (var httpClient = new HttpClient())
             {
-                if (ModelState.IsValid)
+                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
                 {
-                    using (var httpClient = new HttpClient())
+                    if (response.IsSuccessStatusCode)
                     {
-                        var content = new StringContent(JsonConvert.SerializeObject(categoryModel), System.Text.Encoding.UTF8, "application/json");
-                        var response = await httpClient.PostAsync(ProjectConstant.APIEndPoint + "api/Categories/create", content);
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", "Failed to create category.");
-                            return View(categoryModel);
-                        }
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        foundCategory = JsonConvert.DeserializeObject<Category>(responseBody);
                     }
                 }
-                return View(categoryModel);
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Error creating category: {ex.Message}");
-                return View(categoryModel);
-            }
+            return View(foundCategory);
         }
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(short id)
+
+        public async Task<IActionResult> Create()
         {
-            try
+            var parentCategoryList = await GetCategoryList();
+
+            ViewData["ParentCategoryId"] = new SelectList(parentCategoryList, "ParentCategoryId", "CategoryName");
+            return View();
+        }
+
+        private async Task<List<Category>?> GetCategoryList()
+        {
+            var categoryList = new List<Category>();
+            using (var httpClient = new HttpClient())
+            {
+                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories"))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        categoryList = JsonConvert.DeserializeObject<List<Category>>(responseBody);
+                    }
+                }
+            }
+            return categoryList;
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Category category)
+        {
+            if (ModelState.IsValid)
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + "api/Categories/" + id);
+                    var content = new StringContent(JsonConvert.SerializeObject(category), System.Text.Encoding.UTF8, "application/json");
+                    var response = await httpClient.PostAsync(ProjectConstant.APIEndPoint + "Categories", content);
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction("Index");
                     }
                     else
                     {
-                        ModelState.AddModelError("", "Failed to remove category.");
+                        ModelState.AddModelError("", "Failed to create category.");
+                        return View(category);
+                    }
+                }
+            }
+            return View(category);
+        }
+
+        public async Task<IActionResult> Edit(int? id) //DONE GET
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var foundCategory = new Category();
+
+
+            using (var httpClient = new HttpClient())
+            {
+
+                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        foundCategory = JsonConvert.DeserializeObject<Category>(responseBody);
+
+                        if (foundCategory == null)
+                        {
+                            return NotFound();
+                        }
+
+                        var parentCategoryList = await GetCategoryList();
+
+                        ViewData["ParentCategoryId"] = new SelectList(parentCategoryList, "ParentCategoryId", "CategoryName", foundCategory.ParentCategoryId);
+                    }
+                }
+            }
+            return View(foundCategory);
+        }
+
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(short id, [Bind("CategoryId,CategoryName,CategoryDesciption,ParentCategoryId")] Category cate)
+        {
+            if (ModelState.IsValid)
+            {
+                using (var httpClient = new HttpClient())
+                {
+
+                    var content = new StringContent(JsonConvert.SerializeObject(cate), System.Text.Encoding.UTF8, "application/json");
+                    var response = await httpClient.PutAsync(ProjectConstant.APIEndPoint + "Categories/" + id, content);
+                    if (response.IsSuccessStatusCode)
+                    {
                         return RedirectToAction("Index");
                     }
+                    else
+                    {
+                        ModelState.AddModelError("", "Failed to update category.");
+                        return View(cate);
+                    }
                 }
             }
-            catch (Exception ex)
-            {
-                ModelState.AddModelError("", $"Error removing category: {ex.Message}");
-                return RedirectToAction("Index");
-            }
+            return View(cate);
         }
-        [HttpPut("Edit/{id}")]
-        public async Task<IActionResult> Edit(short id, [Bind("CategoryId,CategoryName,CategoryDesciption,IsActive")] CategoryModel categoryModel)
+
+        // GET: Products/Delete/5
+        public async Task<IActionResult> Delete(short? id)
         {
-            try
+            if (id == null)
             {
-                if (ModelState.IsValid)
+                return NotFound();
+            }
+            var foundCategory = new Category();
+
+            using (var httpClient = new HttpClient())
+            {
+
+                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
                 {
-                    using (var httpClient = new HttpClient())
+                    if (response.IsSuccessStatusCode)
                     {
-                        var content = new StringContent(JsonConvert.SerializeObject(categoryModel), System.Text.Encoding.UTF8, "application/json");
-                        var response = await httpClient.PutAsync(ProjectConstant.APIEndPoint + "api/Categories/" + id, content);
-                        if (response.IsSuccessStatusCode)
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        foundCategory = JsonConvert.DeserializeObject<Category>(responseBody);
+
+                        if (foundCategory == null)
                         {
-                            return RedirectToAction("Index");
-                        }
-                        else
-                        {
-                            ModelState.AddModelError("", "Failed to update category.");
-                            return View(categoryModel);
+                            return NotFound();
                         }
                     }
                 }
-                return View(categoryModel);
+                return View(foundCategory);
             }
-            catch (Exception ex)
+        }
+
+        // POST: Products/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(short id)
+        {
+            using (var httpClient = new HttpClient())
             {
-                ModelState.AddModelError("", $"Error updating category: {ex.Message}");
-                return View(categoryModel);
+                var foundCategory = new Category();
+
+                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
+                {
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        foundCategory = JsonConvert.DeserializeObject<Category>(responseBody);
+
+                        if (foundCategory == null)
+                        {
+                            return RedirectToAction(nameof(Index));
+                        }
+                    }
+                }
             }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

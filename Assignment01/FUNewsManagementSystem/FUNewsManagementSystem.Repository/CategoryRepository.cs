@@ -18,7 +18,7 @@ namespace FUNewsManagementSystem.Repository
 
         public async Task<bool> RemoveWithCheckingAsync(Category category)
         {
-            if (category.NewsArticles == null)
+            if (!category.NewsArticles.Any())
             {
                 _context.Remove(category);
                 await _context.SaveChangesAsync();
@@ -27,22 +27,20 @@ namespace FUNewsManagementSystem.Repository
 
             return false;
         }
-        public async Task<Category> GetCategoryByIdAsync(short id)
+        public async Task<Category?> GetCategoryByIdAsync(short id)
         {
             var category = await _context.Categories
-                .Include(c => c.InverseParentCategory)
-                .Include(c => c.NewsArticles)
+                .Include(c => c.ParentCategory)
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
             return category;
         }
 
         public async Task<List<Category>> GetCategories()
         {
-            var categories = await _context.Categories 
-                .Include(c => c.InverseParentCategory)
-                .Include(c => c.NewsArticles)
+            var categories = await _context.Categories
+                .Include(c => c.ParentCategory)
                 .Where(c => c.IsActive == true)
-                .OrderBy(c => c.CategoryName)
+                .OrderBy(c => c.CategoryId)
                 .ToListAsync();
             return categories;
         }
