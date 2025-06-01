@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+
 builder.Services.AddAuthentication()
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
@@ -13,6 +14,12 @@ builder.Services.AddAuthentication()
         options.ExpireTimeSpan = TimeSpan.FromHours(5);
 
     });
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:50013/api/");
+});
+
 
 
 var app = builder.Build();
