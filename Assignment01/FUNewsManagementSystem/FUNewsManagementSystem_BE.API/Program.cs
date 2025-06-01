@@ -9,6 +9,8 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<NewsArticleService>();
+
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<DashboardRepository>();
 builder.Services.AddScoped<NewsArticleRepository>();
