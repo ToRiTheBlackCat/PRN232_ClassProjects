@@ -1,11 +1,14 @@
 ﻿using BusinessObjects;
 using BusinessObjects.ViewModel.Accounts;
 using DataAccessObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
+using ProductManagementMVC.Constant;
+
 
 //using Newtonsoft.Json;
 using System;
@@ -18,14 +21,13 @@ using System.Threading.Tasks;
 
 namespace ProductManagementMVC.Controllers
 {
+    [Authorize(Roles = "1")]
     public class AccountMembersController : Controller
     {
-        public const string API_ENDPOINT = "https://localhost:58026/api/";
-        private readonly MyStoreDBContext _context;
+        public static string API_ENDPOINT = ApiUrlConstant.APIEndPoint;
 
-        public AccountMembersController(MyStoreDBContext context)
+        public AccountMembersController()
         {
-            _context = context;
         }
 
         // GET: AccountMembers
@@ -55,8 +57,6 @@ namespace ProductManagementMVC.Controllers
             }
 
             return View(new PaginatedAccountMembers());
-
-            return View(await _context.AccountMembers.ToListAsync());
         }
 
         // GET: AccountMembers/Details/5

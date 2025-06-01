@@ -1,11 +1,13 @@
 ﻿using BusinessObjects;
 using BusinessObjects.ViewModel.Accounts;
 using DataAccessObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using Newtonsoft.Json;
+using ProductManagementMVC.Constant;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,10 +18,10 @@ using System.Threading.Tasks;
 
 namespace ProductManagementMVC.Controllers
 {
+    [Authorize(Roles = "1")]
     public class CategoriesController : Controller
     {
-        public const string API_ENDPOINT = "https://localhost:58026/api/Categories/";
-        private readonly MyStoreDBContext _context;
+        public static string API_ENDPOINT = ApiUrlConstant.APIEndPoint + "Categories/";
         public CategoriesController()
         {
 
@@ -105,6 +107,12 @@ namespace ProductManagementMVC.Controllers
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+
+            if (CategoryExists(category.CategoryId).Result)
+            {
+                ModelState.AddModelError("CategoryId", "Category with this ID already exists.");
+                return View(category);
             }
 
             using (var httpClient = new HttpClient())

@@ -1,0 +1,120 @@
+﻿@model BusinessObjects.Product
+@{
+    ViewData["Title"] = "Product Details";
+}
+<h2 class="text-center text-uppercase fw-semibold mb-4 pt-2  pb-2"> Product Detail</h2>
+<style>
+    .product-card {
+        display: flex;
+        background: #f4f4f4;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .product-image {
+        flex: 1;
+        background: linear-gradient(135deg, #0f6292, #1e88e5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .product-details {
+        flex: 1;
+        background: white;
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+        .product-details h2 {
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: rebeccapurple;
+        }
+
+    .product-detail-item {
+        font-size: 1rem;
+        color: #444;
+    }
+
+    .label {
+        font-weight: 600;
+        margin-right: 0.5rem;
+        color: #000;
+    }
+
+    .price {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: red;
+    }
+
+    .action-buttons {
+        margin-top: auto;
+        display: flex;
+        gap: 1rem;
+    }
+
+    .btn-custom {
+        padding: 0.6rem 1.4rem;
+        font-weight: 500;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(to right, #2c3e50, #3498db);
+        color: white;
+    }
+
+    .btn-danger-custom {
+        background: linear-gradient(to right, red, #eb3458);
+        color: white;
+    }
+
+    .btn-secondary-custom {
+        background: #f0f0f0;
+        color: #333;
+    }
+</style>
+
+<div class="product-card">
+    <div class="product-image">
+        <img src="https://hangthanhlyhanoi.com/profiles/hangthanhlyhanoicom/uploads/attach/1415546367_20141031img0306.jpg" style="height: 200px; object-fit: contain;" alt="Product Image">
+    </div>
+
+    <div class="product-details">
+        <h2>@Model.ProductName</h2>
+
+        <div class="product-detail-item">
+            <span class="label">Price:</span>
+            <span class="text price">@String.Format("{0:#,##0} VND", Model.UnitPrice)</span>
+        </div>
+
+        <div class="product-detail-item">
+            <span class="label">Units in Stock:</span>
+            <span>@Model.UnitsInStock</span>
+        </div>
+
+        <div class="product-detail-item">
+            <span class="label">Category:</span>
+            <span>@Model.Category?.CategoryName</span>
+        </div>
+
+        <div class="action-buttons">
+            <a asp-action="Edit" asp-route-id="@Model?.ProductId" class="btn-custom btn-primary-custom">Update</a>
+            <a asp-action="Delete" asp-route-id="@Model?.ProductId" class="btn-custom btn-danger-custom">Delete Product</a>
+            <a asp-action="Index" class="btn-custom btn-secondary-custom">Back</a>
+        </div>
+    </div>
+</div>

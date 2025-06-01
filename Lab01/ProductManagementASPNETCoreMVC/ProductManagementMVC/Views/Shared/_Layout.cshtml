@@ -5,51 +5,77 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - ProductManagementMVC</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProductManagementMVC.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProductManagementMVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AccountMembers" asp-action="Index">Account Members</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Categories" asp-action="Index">Categories</a>
-                        </li>
-                    </ul>
-                </div>
+    <header class="navbar navbar-expand-lg navbar-light bg-white shadow-sm px-4 py-3">
+        <div class="container-fluid d-flex align-items-center">
+            <!-- Left empty div to balance flex -->
+            <div style="flex:1"></div>
+
+            <!-- Centered navigation -->
+            <ul class="navbar-nav d-flex flex-row justify-content-center flex-grow-0">
+                <li class="nav-item mx-3">
+                    <a class="nav-link text-uppercase fw-semibold" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link text-uppercase fw-semibold" asp-controller="Products" asp-action="Index">Products</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link text-uppercase fw-semibold" asp-controller="AccountMembers" asp-action="Index">Accounts</a>
+                </li>
+                <li class="nav-item mx-3">
+                    <a class="nav-link text-uppercase fw-semibold" asp-controller="Categories" asp-action="Index">Categories</a>
+                </li>
+            </ul>
+
+            <!-- Right-aligned user info -->
+            <div class="d-flex align-items-center gap-3" style="flex:1; justify-content:flex-end;">
+                <i class="bi bi-person-circle fs-4"></i>
+                <span class="fw-semibold">@Context.Request.Cookies["FullName"]</span>
+                <form asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
+                    <button type="submit" class="btn btn-outline-danger btn-sm">Sign Out</button>
+                </form>
             </div>
-        </nav>
+        </div>
     </header>
+
+
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="bg-light text-center text-muted py-4 shadow-sm mt-auto">
         <div class="container">
-            &copy; 2025 - ProductManagementMVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <span class="fw-semibold d-block mb-2">&copy; 2025 - ProductManagementMVC</span>
+            <div>
+                <a asp-controller="Products" asp-action="Index" class="text-decoration-none text-primary fw-semibold mx-2">
+                    Products
+                </a>
+                |
+                <a asp-controller="Accounts" asp-action="Index" class="text-decoration-none text-primary fw-semibold mx-2">
+                    Accounts
+                </a>
+                |
+                <a asp-controller="Category" asp-action="Index" class="text-decoration-none text-primary fw-semibold mx-2">
+                    Categories
+                </a>
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
