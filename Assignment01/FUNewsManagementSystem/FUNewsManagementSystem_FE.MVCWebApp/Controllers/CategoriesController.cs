@@ -142,7 +142,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(short id, [Bind("CategoryId,CategoryName,CategoryDesciption,ParentCategoryId")] Category cate)
+        public async Task<IActionResult> Edit(short id, [Bind("CategoryId,CategoryName,CategoryDesciption,ParentCategoryId,IsActive")] Category cate)
         {
             if (ModelState.IsValid)
             {
@@ -197,23 +197,21 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(short id)
+        public async Task<IActionResult> DeleteConfirmed(short? id)
         {
+
             using (var httpClient = new HttpClient())
             {
-                var foundCategory = new Category();
-
-                using (var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
+                using (var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + "Categories/" + id))
                 {
-                    if (response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
                     {
-                        var responseBody = await response.Content.ReadAsStringAsync();
-                        foundCategory = JsonConvert.DeserializeObject<Category>(responseBody);
+                        var message = await response.Content.ReadAsStringAsync();
 
-                        if (foundCategory == null)
-                        {
-                            return RedirectToAction(nameof(Index));
-                        }
+                        TempData["AlertMessage"] = message;
+                        
+
+                        return RedirectToAction(nameof(Index));
                     }
                 }
             }

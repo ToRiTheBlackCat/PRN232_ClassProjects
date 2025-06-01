@@ -97,7 +97,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             var result = await _categoryService.Remove(category);
             if (result == true)
             {
-                return Ok("Category removed successfully.");
+                return Ok("Delete successfully");
             }
             else
             {

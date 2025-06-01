@@ -31,6 +31,7 @@ namespace FUNewsManagementSystem.Repository
         {
             var category = await _context.Categories
                 .Include(c => c.ParentCategory)
+                .Include(c => c.NewsArticles)
                 .FirstOrDefaultAsync(c => c.CategoryId == id);
             return category;
         }

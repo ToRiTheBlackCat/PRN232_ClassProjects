@@ -31,14 +31,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="IsActive" class="control-label"></label>
-                @* <input asp-for="IsActive" class="form-control" /> *@
-                <input type="checkbox" id="isActiveCheckbox" class="form-check-input" />
+                <input type="checkbox" id="isActiveCheckbox" class="form-check-input" @(Model.IsActive == true ? "checked" : "") />
                 <input type="hidden" asp-for="IsActive" id="isActiveHidden" />
                 <span asp-validation-for="IsActive" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <button type="submit" class="btn-custom btn-primary-custom">Update</button>
-                <a asp-action="Index" class="btn-custom btn-secondary-custom">Back</a>
             </div>
         </form>
     </div>

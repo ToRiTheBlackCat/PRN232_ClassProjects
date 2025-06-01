@@ -121,3 +121,14 @@
     </div>
 </body>
 </html>
+@section Scripts {
+    <script>
+        window.onload = function () {
+            var message = '@TempData["AlertMessage"]';
+
+            if (message) {
+                alert(message);
+            }
+        };
+    </script>
+}
