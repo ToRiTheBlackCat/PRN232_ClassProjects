@@ -17,6 +17,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        [HttpGet]
         public async Task<IActionResult> IndexAsync(string? searchQuery)
         {
             try
@@ -84,6 +85,83 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
                 _logger.LogError(ex, "Error fetching news article details");
                 return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken] // Protects against Cross-Site Request Forgery (CSRF)
+        public async Task<IActionResult> CreateNewsArticle(NewsArticleModel newsArticle)
+        {
+            // Note: NewsArticleId, CreatedDate, ModifiedDate, CreatedById, UpdatedById, NewsStatus
+            // are often set by the backend API or automatically by the database.
+            // If the backend API requires these, you might need to populate some here.
+            // For demonstration, let's assume the backend handles ID and dates,
+            // but you might need to set a placeholder for CreatedById if your API validates it.
+
+            //if (ModelState.IsValid)
+            
+                try
+                {
+                    var client = _httpClientFactory.CreateClient("ApiClient");
+                    var response = await client.PostAsJsonAsync("NewsArticle/Add", newsArticle); 
+                    if (response.IsSuccessStatusCode)
+                    {
+                        TempData["SuccessMessage"] = "News article created successfully!";
+                        return RedirectToAction(nameof(Index));
+                    }
+                    else
+                    {
+                        var errorContent = await response.Content.ReadAsStringAsync();
+                        _logger.LogError("API Error creating news article: {StatusCode} - {Content}", response.StatusCode, errorContent);
+                        ModelState.AddModelError(string.Empty, $"Error creating news article: {response.ReasonPhrase}. Details: {errorContent}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Exception during news article creation.");
+                    ModelState.AddModelError(string.Empty, "An unexpected error occurred while creating the news article.");
+                }
+            
+
+            // If ModelState is not valid or API call failed, re-display the Index view
+            // and attempt to re-open the modal with validation errors.
+            // Re-fetch necessary data for the view:
+            List<NewsArticleModel> articles = new List<NewsArticleModel>();
+            List<CategoryModel> categories = new List<CategoryModel>();
+
+            try
+            {
+                var client = _httpClientFactory.CreateClient("ApiClient");
+                var articlesResponse = await client.GetAsync("NewsArticle/GetAll");
+                if (articlesResponse.IsSuccessStatusCode)
+                {
+                    var wrappedModel = await articlesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
+                    if (wrappedModel?.Values != null)
+                    {
+                        articles = wrappedModel.Values;
+                    }
+                }
+
+                //var categoriesResponse = await client.GetAsync("Category/GetAll");
+                //if (categoriesResponse.IsSuccessStatusCode)
+                //{
+                //    var wrappedCategories = await categoriesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<CategoryModel>>();
+                //    if (wrappedCategories?.Values != null)
+                //    {
+                //        categories = wrappedCategories.Values;
+                //    }
+                //    else
+                //    {
+                //        categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                //    }
+                //}
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error re-fetching data for Index view after CreateNewsArticle failure.");
+            }
+
+            //ViewBag.Categories = categories;
+            return View("Index", articles); // Return to Index view with current articles and errors
         }
     }
 }

@@ -32,10 +32,16 @@ namespace FUNewsManagementSystem.Service
 
         public async Task<bool> AddAsync(NewsArticleModel newsArticle)
         {
+            List<NewsArticleModel> existingArticles = await _newsArticleRepository.GetAll();
             if (newsArticle == null)
             {
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
+            newsArticle.NewsArticleId = new string((existingArticles.Count+1).ToString()); 
+            newsArticle.CreatedDate = DateTime.UtcNow; 
+            newsArticle.ModifiedDate = DateTime.UtcNow; 
+            newsArticle.NewsStatus = true; 
+            newsArticle.CategoryId = 1; 
             await _newsArticleRepository.CreateAsync(newsArticle);
             return true;
         }

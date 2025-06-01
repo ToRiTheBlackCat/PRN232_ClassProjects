@@ -19,7 +19,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Models
 
         public string NewsSource { get; set; }
 
-        public short? CategoryId { get; set; }
+        public short? CategoryId { get; set; } = 1;
 
         public bool? NewsStatus { get; set; }
 

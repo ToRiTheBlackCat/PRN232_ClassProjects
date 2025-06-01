@@ -36,7 +36,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             }
             return Ok(article);
         }
-        [HttpPost]
+        [HttpPost("Add")]
         public async Task<IActionResult> Add([FromBody] NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
