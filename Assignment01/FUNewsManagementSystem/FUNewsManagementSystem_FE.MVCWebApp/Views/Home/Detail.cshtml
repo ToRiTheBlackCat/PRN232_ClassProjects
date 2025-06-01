@@ -4,7 +4,6 @@
     ViewData["Title"] = Model?.NewsTitle ?? "News Article Detail";
 }
 
-<h1>View</h1>
 <section class="news-article-detail pt-50 pb-50">
     <div class="container">
         <div class="row">
@@ -55,6 +54,9 @@
 
                 <div class="text-center mt-50">
                     <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Back to News</a>
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#updateNewsModal">
+                        <i class="fa fa-edit"></i> Update Article
+                    </button>
                 </div>
             </div>
         </div>
@@ -137,6 +139,68 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+@* =========================== MODAL DEFINITION =========================== *@
+<div class="modal fade" id="updateNewsModal" tabindex="-1" role="dialog" aria-labelledby="updateNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="updateNewsModalLabel">Update News Article</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @* This form will be populated by JavaScript and submitted via AJAX *@
+                <form id="updateArticleForm">
+                    <input type="hidden" id="editNewsArticleId" name="NewsArticleId" value="@Model.NewsArticleId" />
+                    <input type="hidden" id="editCreatedById" name="CreatedById" value="@Model.CreatedById" />
+                    <input type="hidden" id="editCreatedDate" name="CreatedDate" value="@Model.CreatedDate?.ToString("o")" /> @* "o" for ISO 8601 format *@
+
+                    <div class="form-group">
+                        <label for="editNewsTitle">News Title</label>
+                        <input type="text" class="form-control" id="editNewsTitle" name="NewsTitle" value="@Model.NewsTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editHeadline">Headline</label>
+                        <input type="text" class="form-control" id="editHeadline" name="Headline" value="@Model.Headline">
+                    </div>
+                    <div class="form-group">
+                        <label for="editNewsContent">News Content</label>
+                        <textarea class="form-control" id="editNewsContent" name="NewsContent" rows="5">@Model.NewsContent</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editNewsSource">News Source</label>
+                        <input type="text" class="form-control" id="editNewsSource" name="NewsSource" value="@Model.NewsSource">
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategoryId">Category</label>
+                        <select class="form-control" id="editCategoryId" name="CategoryId">
+                            @if (Model.Category != null)
+                            {
+                                <option value="@Model.Category.CategoryId" selected>@Model.Category.CategoryName</option>
+                            }
+                            else
+                            {
+                                <option value="">Select a Category</option>
+                            }
+                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list *@
+                        </select>
+                    </div>
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="editNewsStatus" name="NewsStatus" @(Model.NewsStatus == true ? "checked" : "")>
+                        <label class="form-check-label" for="editNewsStatus">Is Active</label>
+                    </div>
+                    @* We will handle UpdatedById and ModifiedDate on the backend *@
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" id="saveChangesBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Styles {
     <style>
         .single-article-content {
@@ -187,4 +251,96 @@
             padding-top: 15px;
         }
     </style>
+}
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Function to load categories into the dropdown
+            function loadCategories(selectedCategoryId) {
+                var apiUrl = '/api/Category'; // Assuming your category API endpoint
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    success: function (data) {
+                        var categorySelect = $('#editCategoryId');
+                        categorySelect.empty();
+                        categorySelect.append($('<option>').val('').text('Select a Category')); // Default option
+
+                        var categories = data.$values || data; // Handle ReferencePreservedList or direct array
+
+                        $.each(categories, function (index, category) {
+                            categorySelect.append($('<option>', {
+                                value: category.categoryId,
+                                text: category.categoryName
+                            }));
+                        });
+
+                        if (selectedCategoryId) {
+                            categorySelect.val(selectedCategoryId);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error loading categories:", error);
+                        alert("Failed to load categories.");
+                    }
+                });
+            }
+
+            $('#updateNewsModal').on('show.bs.modal', function (event) {
+                var currentArticle = @Html.Raw(Json.Serialize(Model));
+
+                $('#editNewsArticleId').val(currentArticle.newsArticleId);
+                $('#editNewsTitle').val(currentArticle.newsTitle);
+                $('#editHeadline').val(currentArticle.headline);
+                $('#editNewsContent').val(currentArticle.newsContent);
+                $('#editNewsSource').val(currentArticle.newsSource);
+                $('#editCreatedById').val(currentArticle.createdById);
+                $('#editCreatedDate').val(currentArticle.createdDate);
+
+                $('#editNewsStatus').prop('checked', currentArticle.newsStatus);
+
+                loadCategories(currentArticle.categoryId);
+            });
+
+            $('#saveChangesBtn').on('click', function (e) {
+                e.preventDefault();
+
+                var formData = {
+                    NewsArticleId: $('#editNewsArticleId').val(),
+                    NewsTitle: $('#editNewsTitle').val(),
+                    Headline: $('#editHeadline').val(),
+                    CreatedDate: $('#editCreatedDate').val(),
+                    NewsContent: $('#editNewsContent').val(),
+                    NewsSource: $('#editNewsSource').val(),
+                    CategoryId: $('#editCategoryId').val() ? parseInt($('#editCategoryId').val()) : null,
+                    NewsStatus: $('#editNewsStatus').is(':checked'),
+                    CreatedById: $('#editCreatedById').val() ? parseInt($('#editCreatedById').val()) : null,
+                };
+
+                if (!formData.NewsTitle) {
+                    alert("News Title is required.");
+                    return;
+                }
+
+                var articleId = formData.NewsArticleId;
+                var apiUrl = `/api/NewsArticle/Update/${articleId}`;
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify(formData),
+                    success: function (response) {
+                        alert("Article updated successfully!");
+                        $('#updateNewsModal').modal('hide');
+                        location.reload();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error updating article:", xhr.responseText);
+                        alert("Failed to update article. Check console for details.");
+                    }
+                });
+            });
+        });
+    </script>
 }

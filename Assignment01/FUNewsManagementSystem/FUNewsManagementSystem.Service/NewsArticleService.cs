@@ -46,6 +46,9 @@ namespace FUNewsManagementSystem.Service
             {
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
+            var existingArticle = await _newsArticleRepository.GetById(newsArticle.NewsArticleId);
+            newsArticle.ModifiedDate = DateTime.UtcNow; // Update the modified date
+            newsArticle.CategoryId = existingArticle?.CategoryId; // Preserve the category ID
             await _newsArticleRepository.UpdateAsync(newsArticle);
             return true;
         }

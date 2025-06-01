@@ -1,13 +1,17 @@
 using FUNewsManagementSystem.Repository;
+using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem.Service;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<NewsArticleRepository>();
 builder.Services.AddScoped<NewsArticleService>();
+builder.Services.AddScoped<NewsArticleRepository>();
 
+builder.Services.AddDbContext<FUNewsManagementContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

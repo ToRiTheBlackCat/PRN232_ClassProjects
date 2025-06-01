@@ -13,7 +13,7 @@ namespace FUNewsManagementSystem.Repository
     {
         public NewsArticleRepository()
         {
-
+            _context = new FUNewsManagementContext();
         }
 
         public new async Task<List<NewsArticleModel>?> GetAll()
