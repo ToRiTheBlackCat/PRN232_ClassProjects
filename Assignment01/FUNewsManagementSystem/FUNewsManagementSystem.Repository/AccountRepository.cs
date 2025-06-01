@@ -27,6 +27,16 @@ namespace FUNewsManagementSystem.Repository
             return false;
         }
 
+        public async Task<SystemAccount?> GetAccountByIdAsync(short accId)
+        {
+            return await _context.SystemAccounts.Where(x => x.AccountId == accId).FirstOrDefaultAsync();
+        }
+
+        public async Task<SystemAccount?> GetAccountByNameAsync(string? accName)
+        {
+            return await _context.SystemAccounts.Where(x => x.AccountName == accName).FirstOrDefaultAsync();
+        }
+
         public async Task<List<SystemAccount>> GetAccountsAsync(string? accName)
         {
             if (accName != null)
@@ -35,6 +45,39 @@ namespace FUNewsManagementSystem.Repository
             }
             return await _context.SystemAccounts.ToListAsync();
         }
-        public async 
+
+        public async Task<int> UpdateAccountAsync(SystemAccount acc)
+        {
+            SystemAccount? existingAcc = await _context.SystemAccounts.FindAsync(acc.AccountId);
+            if (existingAcc != null)
+            {
+                return await UpdateAsync(acc);
+            }
+            return -1; //Account not found
+        }
+
+        public async Task<bool> DeleteAccountAsync(SystemAccount acc)
+        {
+            SystemAccount? existingAcc = await _context.SystemAccounts.FirstOrDefaultAsync(x => x.AccountId == acc.AccountId);
+            if (existingAcc != null)
+            {
+                return await RemoveWithCheckingAsync(existingAcc);
+            }
+            return false; //Account not found
+        }
+
+        public async Task<int> CreateAccountAsync(SystemAccount acc)
+        {
+            SystemAccount? existingAccount = await _context.SystemAccounts
+                .FirstOrDefaultAsync(x => (x.AccountName == acc.AccountName)||(x.AccountEmail == acc.AccountEmail));
+            if (existingAccount == null)
+            {
+                short count = (short)(_context.SystemAccounts.Max(x => x.AccountId) + 1);
+                acc.AccountId = count;
+                return await CreateAsync(acc);
+            }
+            else if (existingAccount != null) return 0; //Email or Name already existed
+            else return -1; //Unknown error
+        }
     }
 }
