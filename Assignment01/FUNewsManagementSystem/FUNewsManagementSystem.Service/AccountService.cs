@@ -1,10 +1,5 @@
 ﻿using FUNewsManagementSystem.Repository;
 using FUNewsManagementSystem.Repository.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Service
 {
@@ -17,9 +12,34 @@ namespace FUNewsManagementSystem.Service
             _repo = repo;
         }
 
-        public async Task<List<SystemAccount>> ListAccountsAsync(string accName)
+        public async Task<SystemAccount?> GetAccountByIdAsync(short accId)
+        {
+            return await _repo.GetAccountByIdAsync(accId);
+        }
+
+        public async Task<SystemAccount?> GetAccountByNameAsync(string? accName)
+        {
+            return await _repo.GetAccountByNameAsync(accName);
+        }
+
+        public async Task<List<SystemAccount>> ListAccountsAsync(string? accName)
         {
             return await _repo.GetAccountsAsync(accName);
+        }
+
+        public async Task<int> UpdateAccountAsync(SystemAccount acc)
+        {
+            return await _repo.UpdateAccountAsync(acc);
+        }
+
+        public async Task<bool> DeleteAccountAsync(SystemAccount acc)
+        {
+            return await _repo.DeleteAccountAsync(acc);
+        }
+
+        public async Task<int> CreateAccountAsync(SystemAccount acc)
+        {
+            return await _repo.CreateAccountAsync(acc);
         }
     }
 }
