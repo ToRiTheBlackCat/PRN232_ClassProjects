@@ -14,39 +14,38 @@ namespace FUNewsManagementSystem.Service
         public AccountService() => _accountRepository = new AccountRepository();
 
         public async Task<SystemAccount?> Authenticate(string email, string password)
-        public AccountService(AccountRepository repo)
         {
-            _repo = repo;
+            return await _accountRepository.GetSystemAccount(email, password);
         }
 
         public async Task<SystemAccount?> GetAccountByIdAsync(short accId)
         {
-            return await _repo.GetAccountByIdAsync(accId);
+            return await _accountRepository.GetAccountByIdAsync(accId);
         }
 
         public async Task<SystemAccount?> GetAccountByNameAsync(string? accName)
         {
-            return await _repo.GetAccountByNameAsync(accName);
+            return await _accountRepository.GetAccountByNameAsync(accName);
         }
 
         public async Task<List<SystemAccount>> ListAccountsAsync(string? accName)
         {
-            return await _repo.GetAccountsAsync(accName);
+            return await _accountRepository.GetAccountsAsync(accName);
         }
 
         public async Task<int> UpdateAccountAsync(SystemAccount acc)
         {
-            return await _repo.UpdateAccountAsync(acc);
+            return await _accountRepository.UpdateAccountAsync(acc);
         }
 
         public async Task<bool> DeleteAccountAsync(short id)
         {
-            return await _repo.DeleteAccountAsync(id);
+            return await _accountRepository.DeleteAccountAsync(id);
         }
 
         public async Task<int> CreateAccountAsync(SystemAccount acc)
         {
-            return await _repo.CreateAccountAsync(acc);
+            return await _accountRepository.CreateAccountAsync(acc);
         }
     }
 }

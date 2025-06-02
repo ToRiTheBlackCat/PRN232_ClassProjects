@@ -27,6 +27,12 @@ namespace FUNewsManagementSystem.Repository
             return false;
         }
 
+        public async Task<SystemAccount?> GetSystemAccount(string email, string password)
+        {
+            var account = await _context.SystemAccounts.FirstOrDefaultAsync(u => u.AccountEmail == email && u.AccountPassword == password);
+            return account;
+        }
+
         public async Task<SystemAccount?> GetAccountByIdAsync(short accId)
         {
             return await _context.SystemAccounts.Include(x => x.NewsArticles).Where(x => x.AccountId == accId).FirstOrDefaultAsync();
