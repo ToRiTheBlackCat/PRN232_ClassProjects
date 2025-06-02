@@ -32,7 +32,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         }
 
         [HttpGet("newsCount/date")]
-        public async Task<IActionResult> GetNewsCountWithinDate([Required]DateTime fromDate, DateTime toDate)
+        public async Task<IActionResult> GetNewsCountWithinDate([Required] DateTime fromDate, [Required] DateTime toDate)
         {
             int result = await _servDashboard.GetTotalNewsCountByDate(fromDate, toDate);
             return Ok(result);
