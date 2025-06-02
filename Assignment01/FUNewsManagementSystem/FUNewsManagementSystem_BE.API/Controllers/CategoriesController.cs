@@ -1,6 +1,7 @@
 ﻿using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem.Service;
-using FUNewsManagementSystem_FE.MVCWebApp.Models;
+using FUNewsManagementSystem_BE.API.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         }
 
 
-        [HttpGet] //DONE
+        [HttpGet]
         public async Task<ActionResult> GetCategories()
         {
             try
@@ -27,13 +28,6 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 {
                     return NotFound("No categories found.");
                 }
-                //var convert = categories.Select(c => new CategoryModel()
-                //{
-                //    CategoryId = c.CategoryId,
-                //    CategoryName = c.CategoryName,
-                //    CategoryDesciption = c.CategoryDesciption,
-                //    IsActive = c.IsActive
-                //});
                 return Ok(categories);
 
             }

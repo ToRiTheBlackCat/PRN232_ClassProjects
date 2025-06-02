@@ -12,16 +12,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<ICategoryService,CategoryService>();
+
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-
-    builder.Services.AddScoped<NewsArticleService>();
-    builder.Services.AddScoped<NewsArticleRepository>();
+});
+builder.Services.AddScoped<NewsArticleService>();
+builder.Services.AddScoped<NewsArticleRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
     builder.Services.AddDbContext<FUNewsManagementContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

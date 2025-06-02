@@ -1,6 +1,7 @@
 ﻿using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem_FE.MVCWebApp.Constant;
 using FUNewsManagementSystem_FE.MVCWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -11,6 +12,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
     public class CategoriesController : Controller
     {
         //DONE
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Index()
         {
             try
@@ -131,7 +133,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 
                         var parentCategoryList = await GetCategoryList();
 
-                        ViewData["ParentCategoryId"] = new SelectList(parentCategoryList, "ParentCategoryId", "CategoryName", foundCategory.ParentCategoryId);
+                        ViewData["ParentCategoryId"] = new SelectList(parentCategoryList, "CategoryId", "CategoryName", foundCategory.ParentCategoryId);
                     }
                 }
             }

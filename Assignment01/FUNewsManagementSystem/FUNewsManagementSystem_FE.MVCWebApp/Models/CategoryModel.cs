@@ -4,6 +4,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Models
 {
     public class CategoryModel
     {
+        public short CategoryId { get; set; }
         [Required] 
         public string CategoryName { get; set; }
         [Required]

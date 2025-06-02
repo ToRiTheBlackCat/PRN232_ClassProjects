@@ -1,5 +1,6 @@
 using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem_FE.MVCWebApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using NewsArticleModel = FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel;
@@ -10,14 +11,17 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IConfiguration _configuration;
 
-        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
+        public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            _configuration = configuration;
         }
 
         [HttpGet]
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> IndexAsync(string? searchQuery)
         {
             try
@@ -37,14 +41,31 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var wrappedModel = await response.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
+                    var wrappedModel = await response.Content.ReadFromJsonAsync<List<NewsArticleModel>>();
 
-                    if (wrappedModel?.Values == null) // Check if values exist
+                    if (wrappedModel == null) // Check if values exist
                     {
                         return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
                     }
+                    List<CategoryModel> categories = new List<CategoryModel>();
 
-                    return View(wrappedModel.Values);
+                    
+                    var categoriesResponse = await client.GetAsync("Categories");
+                    if (categoriesResponse.IsSuccessStatusCode)
+                    {
+                        //var wrappedCategories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                        //if (wrappedCategories?.Values != null)
+                        //{
+                        //    categories = wrappedCategories.Values;
+                        //}
+                        //else
+                        //{
+                            categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                        //}
+                    }
+
+                    ViewBag.Categories = categories;
+                    return View(wrappedModel);
                 }
 
                 return View(new List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>());
@@ -73,6 +94,7 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
             {
                 var client = _httpClientFactory.CreateClient("ApiClient");
                 var response = await client.GetAsync($"NewsArticle/{id}");
+                ViewBag.ApiBaseUrl = _configuration.GetValue<string>("ApiBaseUrl");
                 if (response.IsSuccessStatusCode)
                 {
                     var article = await response.Content.ReadFromJsonAsync<NewsArticleModel>();
@@ -134,33 +156,34 @@ namespace FUNewsManagementSystem_FE.MVCWebApp.Controllers
                 var articlesResponse = await client.GetAsync("NewsArticle/GetAll");
                 if (articlesResponse.IsSuccessStatusCode)
                 {
-                    var wrappedModel = await articlesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<NewsArticleModel>>();
-                    if (wrappedModel?.Values != null)
+                    var wrappedModel = await articlesResponse.Content.ReadFromJsonAsync<List<NewsArticleModel>>();
+                    if (wrappedModel != null)
                     {
-                        articles = wrappedModel.Values;
+                        articles = wrappedModel;
                     }
                 }
 
-                //var categoriesResponse = await client.GetAsync("Category/GetAll");
-                //if (categoriesResponse.IsSuccessStatusCode)
-                //{
-                //    var wrappedCategories = await categoriesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<CategoryModel>>();
-                //    if (wrappedCategories?.Values != null)
-                //    {
-                //        categories = wrappedCategories.Values;
-                //    }
-                //    else
-                //    {
-                //        categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryModel>>();
-                //    }
-                //}
+                var categoriesResponse = await client.GetAsync("Categories");
+                if (categoriesResponse.IsSuccessStatusCode)
+                {
+                    var wrappedCategories = await categoriesResponse.Content.ReadFromJsonAsync<ReferencePreservedList<CategoryModel>>();
+                    if (wrappedCategories?.Values != null)
+                    {
+                        categories = wrappedCategories.Values;
+                    }
+                    else
+                    {
+                        categories = await categoriesResponse.Content.ReadFromJsonAsync<List<CategoryModel>>();
+                       
+                    }
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error re-fetching data for Index view after CreateNewsArticle failure.");
             }
 
-            //ViewBag.Categories = categories;
+            ViewBag.Categories = categories;
             return View("Index", articles); // Return to Index view with current articles and errors
         }
     }

@@ -3,6 +3,11 @@
 @{
     ViewData["Title"] = Model?.NewsTitle ?? "News Article Detail";
 }
+<script>
+    // **This is where you get the URL from the server-side.**
+    var apiBaseUrl = "@ViewBag.ApiBaseUrl";
+    console.log("apiBaseUrl from ViewBag:", apiBaseUrl);
+</script>
 
 <section class="news-article-detail pt-50 pb-50">
     <div class="container">
@@ -25,18 +30,18 @@
                     </div>
 
                     <div class="article-image mb-40">
-                        <img src="~/img/news-placeholder.jpg" alt="@Model.NewsTitle" class="img-fluid" />
+                        <img src="https://png.pngtree.com/png-vector/20190430/ourlarge/pngtree-vector-creative-bright-hot-news-tag-png-image_995496.jpg" class="img-fluid" />
                     </div>
 
                     <div class="article-content mb-50">
                         <p>@Model.NewsContent</p>
                     </div>
 
-                    @if (Model.Tags != null && Model.Tags.Values != null && Model.Tags.Values.Any())
+                    @if (Model.Tags != null && Model.Tags != null && Model.Tags.Any())
                     {
                         <div class="article-tags">
                             <i class="fa fa-tags"></i> Tags:
-                            @foreach (var tag in Model.Tags.Values)
+                            @foreach (var tag in Model.Tags)
                             {
                                 <span class="badge badge-info mr-1">@tag.TagName</span>
                             }
@@ -69,70 +74,70 @@
     <h4>NewsArticleModel</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsArticleId)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NewsArticleId)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsTitle)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NewsTitle)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Headline)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Headline)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatedDate)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsContent)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NewsContent)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsSource)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NewsSource)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CategoryId)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CategoryId)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.NewsStatus)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.NewsStatus)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.CreatedById)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.CreatedById)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UpdatedById)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.UpdatedById)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ModifiedDate)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.ModifiedDate)
         </dd>
     </dl>
@@ -175,7 +180,7 @@
                         <label for="editNewsSource">News Source</label>
                         <input type="text" class="form-control" id="editNewsSource" name="NewsSource" value="@Model.NewsSource">
                     </div>
-                    <div class="form-group">
+                   @*  <div class="form-group">
                         <label for="editCategoryId">Category</label>
                         <select class="form-control" id="editCategoryId" name="CategoryId">
                             @if (Model.Category != null)
@@ -186,9 +191,9 @@
                             {
                                 <option value="">Select a Category</option>
                             }
-                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list *@
+                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list 
                         </select>
-                    </div>
+                    </div> *@
                     <div class="form-group form-check">
                         <input type="checkbox" class="form-check-input" id="editNewsStatus" name="NewsStatus" @(Model.NewsStatus == true ? "checked" : "")>
                         <label class="form-check-label" for="editNewsStatus">Is Active</label>
@@ -234,41 +239,49 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
+
         .article-title {
             font-size: 2.5rem;
             font-weight: 700;
             color: #333;
             margin-bottom: 15px;
         }
+
         .article-headline {
             font-size: 1.2rem;
             color: #666;
             margin-bottom: 25px;
         }
+
         .article-meta span {
             margin-right: 20px;
             color: #888;
             font-size: 0.9em;
         }
+
         .article-meta i {
             margin-right: 5px;
             color: #007bff; /* Primary color example */
         }
+
         .article-image img {
             max-width: 100%;
             height: auto;
             border-radius: 5px;
         }
+
         .article-content p {
             font-size: 1.1rem;
             line-height: 1.7;
             color: #444;
         }
+
         .article-tags .badge {
             font-size: 0.9em;
             padding: .5em .8em;
             border-radius: 15px;
         }
+
         .article-footer {
             font-size: 0.85em;
             color: #999;
@@ -282,7 +295,7 @@
         $(document).ready(function () {
             // Function to load categories into the dropdown
             function loadCategories(selectedCategoryId) {
-                var apiUrl = '/api/Category'; // Assuming your category API endpoint
+                var apiUrl = "https://localhost:50013/api/Categories" ; // Assuming your category API endpoint
                 $.ajax({
                     url: apiUrl,
                     method: 'GET',
@@ -348,7 +361,7 @@
                 }
 
                 var articleId = formData.NewsArticleId;
-                var apiUrl = `/api/NewsArticle/Update/${articleId}`;
+                var apiUrl = `https://localhost:50013/api/NewsArticle/Update/${articleId}`;
 
                 $.ajax({
                     url: apiUrl,
@@ -369,7 +382,7 @@
             // Handle delete confirmation button click
             $('#confirmDeleteBtn').on('click', function () {
                 var articleId = '@Model.NewsArticleId'; // Get the ID from the model
-                var apiUrl = `/api/NewsArticle/${articleId}`; // Your DELETE API endpoint
+                var apiUrl = `https://localhost:50013/api/NewsArticle/${articleId}`; // Your DELETE API endpoint
 
                 $.ajax({
                     url: apiUrl,
