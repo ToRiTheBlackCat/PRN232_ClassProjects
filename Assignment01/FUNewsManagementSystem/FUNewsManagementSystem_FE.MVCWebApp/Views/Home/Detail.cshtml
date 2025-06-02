@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="article-image mb-40">
-                        <img src="~/img/news-placeholder.jpg" alt="@Model.NewsTitle" class="img-fluid" />
+                        <img src="https://png.pngtree.com/png-vector/20190430/ourlarge/pngtree-vector-creative-bright-hot-news-tag-png-image_995496.jpg" class="img-fluid" />
                     </div>
 
                     <div class="article-content mb-50">
@@ -180,7 +180,7 @@
                         <label for="editNewsSource">News Source</label>
                         <input type="text" class="form-control" id="editNewsSource" name="NewsSource" value="@Model.NewsSource">
                     </div>
-                    <div class="form-group">
+                   @*  <div class="form-group">
                         <label for="editCategoryId">Category</label>
                         <select class="form-control" id="editCategoryId" name="CategoryId">
                             @if (Model.Category != null)
@@ -191,9 +191,9 @@
                             {
                                 <option value="">Select a Category</option>
                             }
-                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list *@
+                            @* Categories will be loaded dynamically via AJAX or pre-populated if you have a list 
                         </select>
-                    </div>
+                    </div> *@
                     <div class="form-group form-check">
                         <input type="checkbox" class="form-check-input" id="editNewsStatus" name="NewsStatus" @(Model.NewsStatus == true ? "checked" : "")>
                         <label class="form-check-label" for="editNewsStatus">Is Active</label>
@@ -295,7 +295,7 @@
         $(document).ready(function () {
             // Function to load categories into the dropdown
             function loadCategories(selectedCategoryId) {
-                var apiUrl = apiBaseUrl + '/api/Category'; // Assuming your category API endpoint
+                var apiUrl = "https://localhost:50013/api/Categories" ; // Assuming your category API endpoint
                 $.ajax({
                     url: apiUrl,
                     method: 'GET',
@@ -361,7 +361,7 @@
                 }
 
                 var articleId = formData.NewsArticleId;
-                var apiUrl = apiBaseUrl + `/api/NewsArticle/Update/${articleId}`;
+                var apiUrl = `https://localhost:50013/api/NewsArticle/Update/${articleId}`;
 
                 $.ajax({
                     url: apiUrl,
@@ -382,7 +382,7 @@
             // Handle delete confirmation button click
             $('#confirmDeleteBtn').on('click', function () {
                 var articleId = '@Model.NewsArticleId'; // Get the ID from the model
-                var apiUrl = apiBaseUrl + `/api/NewsArticle/${articleId}`; // Your DELETE API endpoint
+                var apiUrl = `https://localhost:50013/api/NewsArticle/${articleId}`; // Your DELETE API endpoint
 
                 $.ajax({
                     url: apiUrl,

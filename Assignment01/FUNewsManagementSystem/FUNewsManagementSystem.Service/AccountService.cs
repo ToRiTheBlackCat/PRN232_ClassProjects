@@ -8,7 +8,12 @@ using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Service
 {
-    public class AccountService
+    public interface IAccountService
+    {
+        Task<SystemAccount?> Authenticate(string email, string password);
+    }
+
+    public class AccountService : IAccountService
     {
         private readonly AccountRepository _accountRepository;
         public AccountService() => _accountRepository = new AccountRepository();
