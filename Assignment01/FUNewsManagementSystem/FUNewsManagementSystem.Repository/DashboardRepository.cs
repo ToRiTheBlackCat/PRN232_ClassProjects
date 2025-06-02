@@ -13,7 +13,6 @@ namespace FUNewsManagementSystem.Repository
     {
         public DashboardRepository()
         {
-
         }
 
         /*
@@ -39,7 +38,6 @@ namespace FUNewsManagementSystem.Repository
             return descendants;
         }
 
-        
         public async Task<int> GetTotalNewsCount(string categoryName)
         {
             int count = 0;
@@ -67,37 +65,35 @@ namespace FUNewsManagementSystem.Repository
                 categoryIds.AddRange(allDescendants);
                 count = await _context.NewsArticles
                     .CountAsync(n => categoryIds.Contains((short) n.CategoryId));
-
             }
             return count;
         }
         */
 
+        public async Task<int> GetTotalNewsCount(string categoryName)
+        {
+            int count = 0;
+            Category? category = await _context.Categories
+            .Include(a => a.InverseParentCategory)
+            .FirstOrDefaultAsync(x => x.CategoryName.Contains(categoryName));
 
-            public async Task<int> GetTotalNewsCount(string categoryName)
+            if (category == null)
             {
-                int count = 0;
-                Category? category = await _context.Categories
-                .Include(a => a.InverseParentCategory)
-                .FirstOrDefaultAsync(x => x.CategoryName.Contains(categoryName));
-
-                if (category == null)
-                {
-                    count = await _context.NewsArticles.CountAsync();
-                }
-                else if (category.ParentCategoryId == null || category.CategoryId == category.ParentCategoryId || true) //topmost category or any category (can only get immediate child)
-                {
-                    //Get all immediate child of given category
-                    List<Category> childCate = await _context.Categories.Where(x => x.ParentCategoryId == category.CategoryId).ToListAsync();
-                    foreach (var cate in childCate)
-                    {
-                        count += await _context.NewsArticles.Where(x => x.CategoryId == cate.CategoryId).CountAsync();
-                    }
-                }
-                return count;
+                count = await _context.NewsArticles.CountAsync();
             }
+            else if (category.ParentCategoryId == null || category.CategoryId == category.ParentCategoryId || true) //topmost category or any category (can only get immediate child)
+            {
+                //Get all immediate child of given category
+                List<Category> childCate = await _context.Categories.Where(x => x.ParentCategoryId == category.CategoryId).ToListAsync();
+                foreach (var cate in childCate)
+                {
+                    count += await _context.NewsArticles.Where(x => x.CategoryId == cate.CategoryId).CountAsync();
+                }
+            }
+            return count;
+        }
 
-            public async Task<int> GetTotalNewsCountByDate (DateTime fromDate, DateTime toDate)
+        public async Task<int> GetTotalNewsCountByDate(DateTime fromDate, DateTime toDate)
         {
             return _context.NewsArticles
                 .Where(x => x.CreatedDate >= fromDate && x.CreatedDate < toDate.AddDays(1))

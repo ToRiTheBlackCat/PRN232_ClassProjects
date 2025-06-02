@@ -32,9 +32,9 @@ namespace FUNewsManagementSystem.Service
             return await _repo.UpdateAccountAsync(acc);
         }
 
-        public async Task<bool> DeleteAccountAsync(SystemAccount acc)
+        public async Task<bool> DeleteAccountAsync(short id)
         {
-            return await _repo.DeleteAccountAsync(acc);
+            return await _repo.DeleteAccountAsync(id);
         }
 
         public async Task<int> CreateAccountAsync(SystemAccount acc)

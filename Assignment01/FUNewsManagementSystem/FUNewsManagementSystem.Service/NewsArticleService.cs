@@ -1,5 +1,6 @@
 ﻿using FUNewsManagementSystem.Repository;
 using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem.Repository.Models.FormModels;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,10 @@ namespace FUNewsManagementSystem.Service
         public async Task<List<NewsArticle>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
             return await _repo.Search(newsTitle, headline, newsContent, categoryName);
+        }
+        public async Task<List<NewsArticle>> GetTop5NewestByCategory(string? categoryName)
+        {
+            return await _repo.GetTop5NewestByCategory(categoryName);
         }
     }
 }

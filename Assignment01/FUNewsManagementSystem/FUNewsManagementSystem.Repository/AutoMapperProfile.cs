@@ -13,8 +13,10 @@ namespace FUNewsManagementSystem.Repository
     {
         public AutoMapperProfile()
         {
-            //Create Account mapping
+            //Account mapping
             CreateMap<CreateAccountForm, SystemAccount>().ForMember(dest => dest.AccountId, opt => opt.Ignore());
+            CreateMap<SystemAccountView, SystemAccount>().ReverseMap();
+            CreateMap<UpdateAccountForm, SystemAccount>().ReverseMap();
 
             //Tag mapping (no circular reference)
             CreateMap<Tag, TagView>().ReverseMap();

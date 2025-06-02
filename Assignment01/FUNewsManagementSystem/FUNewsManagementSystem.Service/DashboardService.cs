@@ -1,4 +1,5 @@
 ﻿using FUNewsManagementSystem.Repository;
+using FUNewsManagementSystem.Repository.Models.FormModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,5 +29,6 @@ namespace FUNewsManagementSystem.Service
         {
             return await _repo.GetTotalNewsCountByDate(fromDate, toDate);
         }
+        
     }
 }

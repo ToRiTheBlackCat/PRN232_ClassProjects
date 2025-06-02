@@ -17,7 +17,7 @@ namespace FUNewsManagementSystem.Repository
 
         public async Task<bool> RemoveWithCheckingAsync(SystemAccount acc)
         {
-            if (acc.NewsArticles == null)
+            if (acc.NewsArticles == null || acc.NewsArticles.Count <= 0)
             {
                 _context.Remove(acc);
                 await _context.SaveChangesAsync();
@@ -29,26 +29,26 @@ namespace FUNewsManagementSystem.Repository
 
         public async Task<SystemAccount?> GetAccountByIdAsync(short accId)
         {
-            return await _context.SystemAccounts.Where(x => x.AccountId == accId).FirstOrDefaultAsync();
+            return await _context.SystemAccounts.Include(x => x.NewsArticles).Where(x => x.AccountId == accId).FirstOrDefaultAsync();
         }
 
         public async Task<SystemAccount?> GetAccountByNameAsync(string? accName)
         {
-            return await _context.SystemAccounts.Where(x => x.AccountName == accName).FirstOrDefaultAsync();
+            return await _context.SystemAccounts.Include(x => x.NewsArticles).Where(x => x.AccountName == accName).FirstOrDefaultAsync();
         }
 
         public async Task<List<SystemAccount>> GetAccountsAsync(string? accName)
         {
             if (accName != null)
             {
-                return await _context.SystemAccounts.Where(x => x.AccountName.Contains(accName)).ToListAsync();
+                return await _context.SystemAccounts.Include(x => x.NewsArticles).Where(x => x.AccountName.Contains(accName)).ToListAsync();
             }
-            return await _context.SystemAccounts.ToListAsync();
+            return await _context.SystemAccounts.Include(x => x.NewsArticles).ToListAsync();
         }
 
         public async Task<int> UpdateAccountAsync(SystemAccount acc)
         {
-            SystemAccount? existingAcc = await _context.SystemAccounts.FindAsync(acc.AccountId);
+            SystemAccount existingAcc = await _context.SystemAccounts.Where(x => x.AccountId == acc.AccountId).FirstOrDefaultAsync();
             if (existingAcc != null)
             {
                 return await UpdateAsync(acc);
@@ -56,9 +56,9 @@ namespace FUNewsManagementSystem.Repository
             return -1; //Account not found
         }
 
-        public async Task<bool> DeleteAccountAsync(SystemAccount acc)
+        public async Task<bool> DeleteAccountAsync(short id)
         {
-            SystemAccount? existingAcc = await _context.SystemAccounts.FirstOrDefaultAsync(x => x.AccountId == acc.AccountId);
+            SystemAccount? existingAcc = await _context.SystemAccounts.Include(x => x.NewsArticles).FirstOrDefaultAsync(x => x.AccountId == id);
             if (existingAcc != null)
             {
                 return await RemoveWithCheckingAsync(existingAcc);

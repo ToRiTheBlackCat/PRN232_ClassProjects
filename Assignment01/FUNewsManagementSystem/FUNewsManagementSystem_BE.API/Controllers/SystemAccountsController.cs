@@ -26,7 +26,19 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ListAllOrByName(string? accountName)
+        public async Task<IActionResult> ListAll()
+        {
+            var item = await _serv.ListAccountsAsync("");
+            return item == null
+                ? NotFound(new
+                {
+                    Message = "No account with that name exists (or no account in database)"
+                })
+                : Ok(_mapper.Map<List<SystemAccountView>>(item));
+        }
+
+        [HttpGet("name/{accountName}")]
+        public async Task<IActionResult> ListByName(string? accountName)
         {
             var item = await _serv.ListAccountsAsync(accountName);
             return item == null
@@ -34,10 +46,10 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 {
                     Message = "No account with that name exists (or no account in database)"
                 })
-                : Ok(item);
+                : Ok(_mapper.Map<List<SystemAccountView>>(item));
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("id/{id}")]
         public async Task<IActionResult> SearchById(short id)
         {
             if (id == null)
@@ -54,11 +66,11 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 {
                     Message = $"Account with ID {id} not found!",
                 })
-                : Ok(systemAccount);
+                : Ok(_mapper.Map<SystemAccountView>(systemAccount));
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAccount([FromForm] CreateAccountForm form)
+        public async Task<IActionResult> CreateAccount(CreateAccountForm form)
         {
             var result = await _serv.CreateAccountAsync(_mapper.Map<SystemAccount>(form));
             switch (result)
@@ -76,6 +88,32 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                     Message = "Account not found!",
                 });
             }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(short id)
+        {
+            return !(await _serv.DeleteAccountAsync(id))
+                ? Problem(
+                    "Delete unsuccessful!"
+                )
+                : Ok(new
+                {
+                    Message = "Delete successful!"
+                });
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateAccount(UpdateAccountForm acc)
+        {
+            return await _serv.UpdateAccountAsync(_mapper.Map<SystemAccount>(acc)) < 0
+                ? Problem(
+                    "Update unsuccessful!"
+                )
+                : Ok(new
+                {
+                    Message = "Update successful!"
+                });
         }
     }
 }

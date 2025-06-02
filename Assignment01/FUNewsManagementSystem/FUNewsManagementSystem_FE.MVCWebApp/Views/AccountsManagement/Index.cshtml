@@ -1,4 +1,4 @@
-﻿@model IEnumerable<FUNewsManagementSystem.Repository.Models.SystemAccount>
+﻿@model IEnumerable<FUNewsManagementSystem_FE.MVCWebApp.Models.FormModels.SystemAccountView>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,24 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+<form asp-action="Index">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Account Name</label>
+                <input type="text" id="accName" name="accName" class="form-control" />
+                @* <span asp-validation-for="HolderName" class="text-danger"></span> *@
+            </div>
+        </div>
+        <div class="col-md-3 mt-4">
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
@@ -44,8 +62,7 @@
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.AccountId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AccountId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AccountId">Delete</a>
+                <a asp-action="Details" asp-route-id="@item.AccountId">Details</a> 
             </td>
         </tr>
 }
