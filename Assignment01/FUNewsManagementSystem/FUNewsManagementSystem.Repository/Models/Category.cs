@@ -19,7 +19,7 @@ public partial class Category
 
     public virtual ICollection<Category> InverseParentCategory { get; set; } = new List<Category>();
 
-    public virtual ICollection<NewsArticleModel> NewsArticles { get; set; } = new List<NewsArticleModel>();
+    public virtual ICollection<NewsArticle> NewsArticles { get; set; } = new List<NewsArticle>();
 
     public virtual Category ParentCategory { get; set; }
 }

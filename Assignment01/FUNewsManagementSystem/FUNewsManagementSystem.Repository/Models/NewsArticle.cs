@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace FUNewsManagementSystem.Repository.Models;
 
-public partial class NewsArticleModel
+public partial class NewsArticle
 {
     [Key]
     public string NewsArticleId { get; set; }
