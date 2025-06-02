@@ -1,6 +1,8 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem.Repository.Models.FormModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Repository
 {
-    public class NewsArticleRepository : GenericRepository<NewsArticleModel>
+    public class NewsArticleRepository : GenericRepository<NewsArticleView>
     {
         public NewsArticleRepository()
         {
             _context = new FUNewsManagementContext();
         }
 
-        public new async Task<List<NewsArticleModel>?> GetAll()
+        public new async Task<List<NewsArticleView>?> GetAll()
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
@@ -26,7 +28,18 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public new async Task<NewsArticleModel?> GetById(string id)
+        public async Task<List<NewsArticleView>?> GetAllByDate(DateTime fromDate, DateTime toDate)
+        { 
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Where(x => x.CreatedDate >= fromDate && x.CreatedDate < toDate.AddDays(1))
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+
+            return itemList;
+        }
+
+        public new async Task<NewsArticleView?> GetById(string id)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags) 
@@ -36,7 +49,28 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticleModel>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
+        public async Task<List<NewsArticleView>> GetTop5NewestByCategory(string? categoryName)
+        {
+            List<NewsArticleView> itemList = new List<NewsArticleView>();
+            if (categoryName.IsNullOrEmpty())
+            {
+                itemList = await _context.NewsArticles
+                    .Include(x => x.Tags)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .Take(5)
+                    .ToListAsync();
+            }
+            itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Where(x => x.Category.CategoryName.Equals(categoryName))
+                .OrderByDescending(x => x.CreatedDate)
+                .Take(5)
+                .ToListAsync();
+
+            return itemList;
+        }
+
+        public async Task<List<NewsArticleView>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
@@ -52,7 +86,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticleModel>> SearchTitle(string? newTitle)
+        public async Task<List<NewsArticleView>> SearchTitle(string? newTitle)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)

@@ -2,13 +2,11 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace FUNewsManagementSystem.Repository.Models;
 
 public partial class NewsArticle
 {
-    [Key]
     public string NewsArticleId { get; set; }
 
     public string NewsTitle { get; set; }
