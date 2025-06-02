@@ -28,7 +28,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticle>?> GetAllByDate(DateTime fromDate, DateTime toDate)
+        public async Task<List<NewsArticleModel>?> GetAllByDate(DateTime fromDate, DateTime toDate)
         { 
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
@@ -39,7 +39,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public new async Task<NewsArticle?> GetById(string id)
+        public new async Task<NewsArticleModel?> GetById(string id)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags) 
@@ -49,9 +49,9 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticle>> GetTop5NewestByCategory(string? categoryName)
+        public async Task<List<NewsArticleModel>> GetTop5NewestByCategory(string? categoryName)
         {
-            List<NewsArticle> itemList = new List<NewsArticle>();
+            List<NewsArticleModel> itemList = new List<NewsArticleModel>();
             if (categoryName.IsNullOrEmpty())
             {
                 itemList = await _context.NewsArticles
@@ -70,7 +70,7 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
-        public async Task<List<NewsArticle>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
+        public async Task<List<NewsArticleModel>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
