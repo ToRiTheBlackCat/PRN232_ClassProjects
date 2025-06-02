@@ -9,6 +9,7 @@ builder.Services.AddAuthentication()
     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
     {
         options.LoginPath = new PathString("/Auth/Login");
+        options.AccessDeniedPath = new PathString("/Auth/Forbidden");
         options.ExpireTimeSpan = TimeSpan.FromHours(5);
 
     });

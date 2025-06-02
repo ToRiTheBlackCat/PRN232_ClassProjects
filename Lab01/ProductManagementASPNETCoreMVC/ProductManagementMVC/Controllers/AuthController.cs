@@ -72,5 +72,10 @@ namespace ProductManagementMVC.Controllers
             return RedirectToAction("Login");
         }
 
+        public async Task<IActionResult> Forbidden()
+        {
+            return View("Forbidden");
+        }
+
     }
 }

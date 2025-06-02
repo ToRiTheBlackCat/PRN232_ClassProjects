@@ -18,6 +18,7 @@ using X.PagedList.Extensions;
 
 namespace ProductManagementMVC.Controllers
 {
+    [Authorize(Roles = "1 , 2")]
     public class ProductsController : Controller
     {
         public ProductsController()
