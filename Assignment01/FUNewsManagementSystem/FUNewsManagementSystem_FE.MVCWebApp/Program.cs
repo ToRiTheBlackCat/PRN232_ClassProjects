@@ -1,10 +1,21 @@
 using FUNewsManagementSystem.Service;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
+using System.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var configuration = builder.Configuration;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:50013/api/");
+    var apiBaseUrl = configuration.GetValue<string>("ApiBaseUrl");
+});
 
 
 builder.Services.AddAuthentication()
