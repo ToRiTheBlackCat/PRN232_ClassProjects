@@ -35,6 +35,18 @@ builder.Services.AddCors(options =>
     });
 
 });
+builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<NewsArticleService>();
+
+builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddScoped<DashboardRepository>();
+builder.Services.AddScoped<NewsArticleRepository>();
+builder.Services.AddScoped<CategoryRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

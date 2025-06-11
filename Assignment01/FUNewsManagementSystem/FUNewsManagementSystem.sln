@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem_BE.API", "FUNewsManagementSystem_BE.API\FUNewsManagementSystem_BE.API.csproj", "{654760D3-6C71-4B09-99D8-A348C4EABC68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem_BE.API", "FUNewsManagementSystem_BE.API\FUNewsManagementSystem_BE.API.csproj", "{654760D3-6C71-4B09-99D8-A348C4EABC68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem_FE.MVCWebApp", "FUNewsManagementSystem_FE.MVCWebApp\FUNewsManagementSystem_FE.MVCWebApp.csproj", "{FC35EC94-6980-4F3F-9460-1D7795F6ED42}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem_FE.MVCWebApp", "FUNewsManagementSystem_FE.MVCWebApp\FUNewsManagementSystem_FE.MVCWebApp.csproj", "{FC35EC94-6980-4F3F-9460-1D7795F6ED42}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem.Repository", "FUNewsManagementSystem.Repository\FUNewsManagementSystem.Repository.csproj", "{F4E83AEA-58B3-47B8-9EEB-0D2077665B01}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem.Repository", "FUNewsManagementSystem.Repository\FUNewsManagementSystem.Repository.csproj", "{F4E83AEA-58B3-47B8-9EEB-0D2077665B01}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem.Service", "FUNewsManagementSystem.Service\FUNewsManagementSystem.Service.csproj", "{78D79816-CE9A-4CF3-A3AB-4ED82CCEDFDA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem.Service", "FUNewsManagementSystem.Service\FUNewsManagementSystem.Service.csproj", "{78D79816-CE9A-4CF3-A3AB-4ED82CCEDFDA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
