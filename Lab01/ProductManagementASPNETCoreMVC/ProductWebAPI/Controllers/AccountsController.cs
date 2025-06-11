@@ -8,6 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using BusinessObjects;
 using DataAccessObjects;
 using Services;
+using Microsoft.AspNetCore.Identity.Data;
+using ProductManagementMVC.Models;
+using LoginRequest = ProductManagementMVC.Models.LoginRequest;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using BusinessObjects.ViewModel.Accounts;
 
 namespace ProductWebAPI.Controllers
 {
@@ -15,25 +22,46 @@ namespace ProductWebAPI.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountService _context;
+        private readonly IAccountService _userService;
 
-        public AccountsController(IAccountService context)
+        public AccountsController(IAccountService userService)
         {
-            _context = context;
+            _userService = userService;
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<AccountMember>> LoginAsync(LoginRequest request)
+        {
+            try
+            {
+                var foundAccount = _userService.Authenticate(request);
+                if (foundAccount != null)
+                {
+                    return Ok(foundAccount); 
+                }
+            }
+            catch (Exception ex)
+            {
+                // Optionally log the error
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+
+            return NotFound("Invalid email or password");
+        }
+
 
         // GET: api/Account
         [HttpGet]
-        public ActionResult<IEnumerable<AccountMember>> GetAccountMembers()
+        public ActionResult<PaginatedAccountMembers> GetAccountMembers(string fullName = "", string email = "", int roleId = 0, int pageNum = 1)
         {
-            return _context.GetAccounts();
+            return _userService.SearchAccount(fullName, email, roleId, pageNum);
         }
 
         // GET: api/Account/5
         [HttpGet("{id}")]
         public ActionResult<AccountMember> GetAccountMember(string id)
         {
-            var accountMember = _context.GetAccountById(id);
+            var accountMember = _userService.GetAccountById(id);
 
             if (accountMember == null)
             {
@@ -55,7 +83,7 @@ namespace ProductWebAPI.Controllers
 
             try
             {
-                _context.UpdateAccount(accountMember);
+                _userService.UpdateAccount(accountMember);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -77,7 +105,7 @@ namespace ProductWebAPI.Controllers
         [HttpPost]
         public ActionResult<AccountMember> PostAccountMember(AccountMember accountMember)
         {
-            _context.SaveAccount(accountMember);
+            _userService.SaveAccount(accountMember);
 
             return CreatedAtAction("GetAccountMember", new { id = accountMember.MemberId }, accountMember);
         }
@@ -86,20 +114,20 @@ namespace ProductWebAPI.Controllers
         [HttpDelete("{id}")]
         public IActionResult DeleteAccountMember(string id)
         {
-            var accountMember = _context.GetAccountById(id);
+            var accountMember = _userService.GetAccountById(id);
             if (accountMember == null)
             {
                 return NotFound();
             }
 
-            _context.DeleteAccount(accountMember);
+            _userService.DeleteAccount(accountMember);
 
             return NoContent();
         }
 
         private bool AccountMemberExists(string id)
         {
-            var foundAccount = _context.GetAccountById(id);
+            var foundAccount = _userService.GetAccountById(id);
             return foundAccount != null ? true : false;
         }
     }

@@ -1,0 +1,87 @@
+﻿@* @model IEnumerable<BusinessObjects.Product> *@
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+@model X.PagedList.IPagedList<BusinessObjects.Product>
+@{
+    ViewData["Title"] = "Product List";
+}
+
+<style>
+    .btn-purple {
+        background-color: #4B0082;
+        color: white;
+    }
+
+        .btn-purple:hover {
+            background-color: #5e22a3;
+        }
+
+    .btn-red {
+        background-color: red;
+        color: white;
+    }
+
+        .btn-red:hover {
+            background-color: #eb3458;
+        }
+</style>
+<h2 class="text-center text-uppercase fw-semibold mb-4 pt-2  pb-2"> Product List</h2>
+
+<div class="d-flex justify-content-center">
+    <form asp-action="Index" class="row g-2 align-items-center">
+        <div class="col-auto">
+            <label for="productName" class="form-label mb-0">ProductName</label>
+            <input type="text" class="form-control" id="productName" name="productName" value="@Context.Request.Query["productName"]">
+
+        </div>
+        <div class="col-auto">
+            <label for="categoryName" class="form-label mb-0">CategoryName</label>
+            <input type="text" class="form-control" id="categoryName" name="categoryName" value="@Context.Request.Query["categoryName"]">
+
+        </div>
+        <div class="col-auto d-flex align-items-end gap-2 mt-4">
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a asp-action="Create" class="btn btn-danger">Create new</a>
+        </div>
+    </form>
+</div>
+
+<div class="container mt-4">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center shadow-sm">
+                    <div class="card-header bg-success py-2"></div>
+                    <img src="https://hangthanhlyhanoi.com/profiles/hangthanhlyhanoicom/uploads/attach/1415546367_20141031img0306.jpg" alt="Product Image" class="card-img-top p-3" style="height: 200px; object-fit: contain;">
+
+                    <div class="card-body">
+                        <h3 class="card-title fw-bold">@item.ProductName</h3>
+                        <p class="text-primary fs-5 fw-bold">@String.Format("{0:#,##0} VND", @item.UnitPrice)</p>
+                        <h5 class="card-title fw-bold text-warning">@item.UnitsInStock left</h5>
+                        <h5 class="card-title fw-bold text-secondary">Type: @item.Category.CategoryName</h5>
+
+                        <a asp-action="Details" asp-route-id="@item.ProductId" class="btn btn-success w-100 mb-2">View Detail</a>
+                        <a asp-action="Edit" asp-route-id="@item.ProductId" class="btn btn-purple w-100 mb-2">Edit Product</a>
+                        <a asp-action="Delete" asp-route-id="@item.ProductId" class="btn btn-red w-100">Delete Product</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Pagination -->
+<div class="d-flex justify-content-center mt-4">
+    @Html.PagedListPager(Model, page => Url.Action("Index", new
+        {
+            page = page,
+            productName = Context.Request.Query["productName"],
+            categoryName = Context.Request.Query["categoryName"]
+        }),
+            new PagedListRenderOptions
+    {
+        LiElementClasses = new[] { "page-item", "mx-2" },
+        PageClasses = new[] { "page-link" }
+    })
+</div>

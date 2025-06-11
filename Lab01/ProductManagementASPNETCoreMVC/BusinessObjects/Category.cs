@@ -2,13 +2,16 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace BusinessObjects;
 
 public partial class Category
 {
+    [Required]
     public int CategoryId { get; set; }
 
+    [Required]
     public string CategoryName { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();

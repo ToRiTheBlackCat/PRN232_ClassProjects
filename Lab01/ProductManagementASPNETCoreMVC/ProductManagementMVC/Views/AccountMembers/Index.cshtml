@@ -1,0 +1,159 @@
+﻿@using BusinessObjects.ViewModel.Accounts
+@model PaginatedAccountMembers
+
+@{
+    ViewData["Title"] = "Index";
+    var testSelect = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "0", Text = "All Roles" },
+    };
+    testSelect.AddRange(ViewBag.RoleList as IEnumerable<SelectListItem> ?? new List<SelectListItem>());
+    var selected = ViewBag.RoleId?.ToString() ?? "0";
+}
+
+<h1>Member List</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-sm btn-outline-primary">Create New</a>
+</p>
+
+<div class="container mt-5">
+    <div class="card shadow-sm rounded-4">
+        <div class="card-header bg-primary text-white">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">User Information</h4>
+
+                <form method="get" asp-controller="AccountMembers" asp-action="Index" class="row g-3 align-items-end mb-4 col-md-8">
+                    <div class="col-md-4">
+                        <label for="fullName" class="form-label">Full Name</label>
+                        <input type="text" class="form-control" id="fullName" name="fullName" value="@ViewBag.FullName" placeholder="Search by name..." />
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="text" class="form-control" id="email" name="email" value="@ViewBag.Email" placeholder="Search by email..." />
+                    </div>
+
+                    <div class="col-md-2">
+                        <select name="roleId" class="form-select">
+                            @foreach (var role in testSelect)
+                            {
+                                if (role.Value == selected)
+                                {
+                                    <option value="@role.Value" selected>@role.Text</option>
+                                } 
+                                else
+                                {
+                                    <option value="@role.Value">@role.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button class="btn btn-secondary w-100">Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Account Member Information</h4>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountMembers[0].MemberId)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountMembers[0].FullName)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountMembers[0].EmailAddress)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.AccountMembers[0].MemberRole)
+                        </th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.AccountMembers.Any())
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">No users found.</td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.AccountMembers)
+                        {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.MemberId)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.FullName)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.EmailAddress)
+                            </td>
+                            <td>
+                                @{
+                                    var roleId = item.MemberRole.ToString();
+                                    var selectedRole = testSelect.FirstOrDefault(x => x.Value == roleId);
+                                    if (selectedRole == null)
+                                    {
+                                        selectedRole = new SelectListItem { Value = "-1", Text = "Unknown Role" };
+                                    }
+                                }
+                                @Html.DisplayFor(modelItem => selectedRole.Text)
+                            </td>
+                            <td class="text-end">
+                                <a href="@Url.Action("Edit", "AccountMembers", new { id = item.MemberId })" class="btn btn-sm btn-outline-secondary">Edit</a>
+                                <a href="@Url.Action("Delete", "AccountMembers", new { id = item.MemberId })" class="btn btn-sm btn-outline-danger">Delete</a>
+                            </td>
+                        </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="card-footer text-center">
+            <nav>
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item @(Model.PageNum == 1 ? "disabled" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { 
+                                pageNum = Model.PageNum - 1, 
+                                fullName = ViewBag.FullName, 
+                                email = ViewBag.Email, 
+                                roleId = ViewBag.RoleId })">Previous</a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPage; i++)
+                    {
+                        <li class="page-item @(i == Model.PageNum ? "active" : "")">
+                            <a class="page-link" href="@Url.Action("Index", new { 
+                                pageNum = i, 
+                                fullName = ViewBag.FullName, 
+                                email = ViewBag.Email, 
+                                roleId = ViewBag.RoleId })">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.PageNum == Model.TotalPage ? "disabled" : "")">
+                        <a class="page-link" 
+                            href="@Url.Action("Index", new { 
+                                pageNum = Model.PageNum + 1, 
+                                fullName = ViewBag.FullName, 
+                                email = ViewBag.Email, 
+                                roleId = ViewBag.RoleId })">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

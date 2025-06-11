@@ -1,4 +1,6 @@
 ﻿using BusinessObjects;
+using ProductManagementMVC.Models;
+using BusinessObjects.ViewModel.Accounts;
 using Repositories;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,11 @@ namespace Services
         public AccountService()
         {
             iAccountRepository = new AccountRepository();
+        }
+
+        public AccountMember? Authenticate(LoginRequest request)
+        {
+            return iAccountRepository.GetAccountByEmailAndPassword(request.EmailAddress, request.MemberPassword);
         }
 
         public void DeleteAccount(AccountMember acc)
@@ -39,6 +46,18 @@ namespace Services
         public void UpdateAccount(AccountMember acc)
         {
             iAccountRepository.UpdateAccount(acc);
+        }
+
+        public PaginatedAccountMembers SearchAccount(string fullName, string email, int roleId, int pageNum)
+        {
+            var dataList = iAccountRepository.SearchAccount(fullName, email, roleId);
+
+            if (!dataList.Any())
+            {
+                return new PaginatedAccountMembers();
+            }
+
+            return PaginatedAccountMembers.ToPaginatedAccountMembers(dataList, pageNum);
         }
     }
 }

@@ -14,6 +14,7 @@ namespace Repositories
         void UpdateProduct(Product p);
         void CreateProduct(Product p);
         List<Product> GetProducts();
+        Task<List<Product>> SearchProducts(string? productName, string? categoryName);
         Product? GetProductById(int id);
     }
 }
