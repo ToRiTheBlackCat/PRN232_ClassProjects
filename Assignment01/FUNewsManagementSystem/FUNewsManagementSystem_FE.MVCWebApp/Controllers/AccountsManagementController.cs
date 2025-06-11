@@ -1,5 +1,7 @@
-﻿using FUNewsManagementSystem_FE.MVCWebApp.Models;
+﻿using FUNewsManagementSystem_FE.MVCWebApp.Constant;
+using FUNewsManagementSystem_FE.MVCWebApp.Models;
 using FUNewsManagementSystem_FE.MVCWebApp.Models.FormModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -11,13 +13,14 @@ namespace FEMVC.Controllers
         {
         }
 
+        [Authorize(Roles = "1")]
         public async Task<IActionResult> Index()
         {
             try
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync("https://localhost:50013/api/" + "SystemAccounts");
+                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "SystemAccounts");
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
@@ -39,7 +42,7 @@ namespace FEMVC.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync("https://localhost:50013/api/" + "SystemAccounts/id/" + id);
+                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "SystemAccounts/id/" + id);
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
@@ -65,7 +68,7 @@ namespace FEMVC.Controllers
                     using (var httpClient = new HttpClient())
                     {
                         var content = new StringContent(JsonConvert.SerializeObject(acc), System.Text.Encoding.UTF8, "application/json");
-                        var response = await httpClient.PostAsync("https://localhost:50013/api/" + "SystemAccounts", content);
+                        var response = await httpClient.PostAsync(ProjectConstant.APIEndPoint + "SystemAccounts", content);
                         if (response.IsSuccessStatusCode)
                         {
                             return RedirectToAction(nameof(Index));
@@ -87,7 +90,7 @@ namespace FEMVC.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.DeleteAsync("https://localhost:50013/api/" + $"SystemAccounts/{id}");
+                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + $"SystemAccounts/{id}");
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToAction(nameof(Index));
@@ -114,7 +117,7 @@ namespace FEMVC.Controllers
             {
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync("https://localhost:50013/api/" +"SystemAccounts/id/" + id);
+                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint +"SystemAccounts/id/" + id);
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
@@ -146,7 +149,7 @@ namespace FEMVC.Controllers
                     using (var httpClient = new HttpClient())
                     {
                         var content = new StringContent(JsonConvert.SerializeObject(acc), System.Text.Encoding.UTF8, "application/json");
-                        var response = await httpClient.PatchAsync("https://localhost:50013/api/" + "SystemAccounts", content);
+                        var response = await httpClient.PatchAsync(ProjectConstant.APIEndPoint + "SystemAccounts", content);
 
                         if (response.IsSuccessStatusCode)
                         {

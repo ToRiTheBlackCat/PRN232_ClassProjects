@@ -19,9 +19,16 @@ namespace FUNewsManagementSystem.Repository
         }
 
         public new async Task<List<NewsArticleModel>?> GetAll()
-        {            var itemList = await _context.NewsArticles                .Include(x => x.Tags)                .OrderByDescending(x => x.CreatedDate)                .ToListAsync();            return itemList;        }
+        {
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
 
-        public async Task<List<NewsArticle>?> GetAllByDate(DateTime fromDate, DateTime toDate)
+            return itemList;
+        }
+
+        public async Task<List<NewsArticleModel>?> GetAllByDate(DateTime fromDate, DateTime toDate)
         { 
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags)
@@ -33,13 +40,18 @@ namespace FUNewsManagementSystem.Repository
         }
 
         public new async Task<NewsArticleModel?> GetById(string id)
-        {            var itemList = await _context.NewsArticles                .Include(x => x.Tags) 
-                .Include(x => x.Category)
-                .FirstOrDefaultAsync(x => x.NewsArticleId.Equals(id));            return itemList;        }
-
-        public async Task<List<NewsArticle>> GetTop5NewestByCategory(string? categoryName)
         {
-            List<NewsArticle> itemList = new List<NewsArticle>();
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags) 
+                .Include(x => x.Category)
+                .FirstOrDefaultAsync(x => x.NewsArticleId.Equals(id));
+
+            return itemList;
+        }
+
+        public async Task<List<NewsArticleModel>> GetTop5NewestByCategory(string? categoryName)
+        {
+            List<NewsArticleModel> itemList = new List<NewsArticleModel>();
             if (categoryName.IsNullOrEmpty())
             {
                 itemList = await _context.NewsArticles
@@ -59,7 +71,21 @@ namespace FUNewsManagementSystem.Repository
         }
 
         public async Task<List<NewsArticleModel>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
-        {            var itemList = await _context.NewsArticles                .Include(x => x.Tags)                .Include(x => x.Category)                .Where(x =>                    string.IsNullOrEmpty(newsTitle) || x.NewsTitle.Contains(newsTitle) ||                    string.IsNullOrEmpty(headline) || x.Headline.Contains(headline) ||                    string.IsNullOrEmpty(newsContent) || x.NewsContent.Contains(newsContent) ||                    string.IsNullOrEmpty(categoryName) || x.Category.CategoryName.Contains(categoryName))                .OrderByDescending(x => x.CreatedDate)                .ToListAsync();            return itemList;        }
+        {
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Include(x => x.Category)
+                .Where(x =>
+                    string.IsNullOrEmpty(newsTitle) || x.NewsTitle.Contains(newsTitle) ||
+                    string.IsNullOrEmpty(headline) || x.Headline.Contains(headline) ||
+                    string.IsNullOrEmpty(newsContent) || x.NewsContent.Contains(newsContent) ||
+                    string.IsNullOrEmpty(categoryName) || x.Category.CategoryName.Contains(categoryName))
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+
+            return itemList;
+        }
+
         public async Task<List<NewsArticleModel>> SearchTitle(string? newTitle)
         {
             var itemList = await _context.NewsArticles

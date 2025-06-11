@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem.Repository
 {
-    public class DashboardRepository : GenericRepository<NewsArticle>
+    public class DashboardRepository : GenericRepository<NewsArticleModel>
     {
         public DashboardRepository()
         {

@@ -22,7 +22,7 @@ namespace FUNewsManagementSystem.Repository
             CreateMap<Tag, TagView>().ReverseMap();
 
             //NewsArticle mapping
-            CreateMap<NewsArticle, NewsArticleView>()
+            CreateMap<NewsArticleModel, NewsArticleView>()
                 .ForMember(dest => dest.TagsList, opt => opt.MapFrom(src => src.Tags))
                 .ReverseMap()
                 .ForMember(dest => dest.Tags, opt => opt.Ignore()); //News only

@@ -19,7 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\FUNewsManagementSystem.Repository\FUNewsManagementSystem.Repository.csproj" />
     <ProjectReference Include="..\FUNewsManagementSystem.Service\FUNewsManagementSystem.Service.csproj" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   

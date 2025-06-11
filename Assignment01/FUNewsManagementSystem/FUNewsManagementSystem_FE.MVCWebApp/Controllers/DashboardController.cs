@@ -1,4 +1,6 @@
 ﻿using FEMVC.Models.FormModels;
+using FUNewsManagementSystem_FE.MVCWebApp.Constant;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
@@ -7,6 +9,7 @@ namespace FEMVC.Controllers
 {
     public class DashboardController : Controller
     {
+        [Authorize(Roles = "1")]
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -17,7 +20,7 @@ namespace FEMVC.Controllers
                 {
                     using (var httpClient = new HttpClient())
                     {
-                        var response = await httpClient.GetAsync("https://localhost:50013/api/" + "Dashboard" + "/newsCount/category");
+                        var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Dashboard" + "/newsCount/category");
                         if (response.IsSuccessStatusCode)
                         {
                             var jsonString = await response.Content.ReadAsStringAsync();
@@ -53,17 +56,17 @@ namespace FEMVC.Controllers
                         if (data.SelectedFilter != null) data.SelectedFilter = data.SelectedFilter.ToLower();
                         if (data.SelectedFilter == null || data.SelectedFilter.Contains("none"))
                         {
-                            response = await httpClient.GetAsync("https://localhost:50013/api/" + "Dashboard" + "/newsCount/category");
+                            response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Dashboard" + "/newsCount/category");
                         }
                         else if (data.SelectedFilter.Contains("date"))
                         {
                             var fromDateStr = data.fromDate.ToString("O"); // ISO 8601
                             var toDateStr = data.toDate.ToString("O");
-                            response = await httpClient.GetAsync("https://localhost:50013/api/" + "Dashboard" + $"/newsCount/date?fromDate={Uri.EscapeDataString(fromDateStr)}&toDate={Uri.EscapeDataString(toDateStr)}");
+                            response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Dashboard" + $"/newsCount/date?fromDate={Uri.EscapeDataString(fromDateStr)}&toDate={Uri.EscapeDataString(toDateStr)}");
                         }
                         else
                         {
-                            response = await httpClient.GetAsync("https://localhost:50013/api/" + "Dashboard" + "/newsCount/category?categoryName=" + data.categoryName);
+                            response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Dashboard" + "/newsCount/category?categoryName=" + data.categoryName);
                         }
 
                         if (response.IsSuccessStatusCode)

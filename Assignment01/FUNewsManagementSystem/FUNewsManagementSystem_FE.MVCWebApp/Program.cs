@@ -29,10 +29,6 @@ builder.Services.AddHttpClient("ApiClient", client =>
     var apiBaseUrl = configuration.GetValue<string>("ApiBaseUrl");
 });
 
-var configuration = builder.Configuration;
-
-// Add services to the container.
-builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 
