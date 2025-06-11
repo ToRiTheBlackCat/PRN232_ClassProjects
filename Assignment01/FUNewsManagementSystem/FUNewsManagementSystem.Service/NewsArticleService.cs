@@ -1,5 +1,7 @@
 ﻿using FUNewsManagementSystem.Repository;
 using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem.Repository.Models.FormModels;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +17,7 @@ namespace FUNewsManagementSystem.Service
         {
             _newsArticleRepository = new NewsArticleRepository();
         }
+
         public async Task<List<NewsArticleModel>?> GetAllAsync()
         {
             return await _newsArticleRepository.GetAll();
@@ -30,6 +33,11 @@ namespace FUNewsManagementSystem.Service
             return await _newsArticleRepository.GetById(id);
         }
 
+        public new async Task<List<NewsArticleModel>?> GetAll()
+        {
+            return await _newsArticleRepository.GetAll();
+        }
+
         public async Task<bool> AddAsync(NewsArticleModel newsArticle)
         {
             List<NewsArticleModel> existingArticles = await _newsArticleRepository.GetAll();
@@ -37,13 +45,20 @@ namespace FUNewsManagementSystem.Service
             {
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
-            newsArticle.NewsArticleId = new string((existingArticles.Count+1).ToString()); 
-            newsArticle.CreatedDate = DateTime.UtcNow; 
-            newsArticle.ModifiedDate = DateTime.UtcNow; 
-            newsArticle.NewsStatus = true; 
-            newsArticle.CategoryId = 1; 
+            newsArticle.NewsArticleId = new string((existingArticles.Count + 1).ToString());
+            newsArticle.CreatedDate = DateTime.UtcNow;
+            newsArticle.ModifiedDate = DateTime.UtcNow;
+            newsArticle.NewsStatus = true;
+            newsArticle.CategoryId = 1;
             await _newsArticleRepository.CreateAsync(newsArticle);
             return true;
+            
+        }
+
+        public async Task<List<NewsArticleModel>?> GetAllByDate(DateTime fromDate, DateTime toDate)
+        {
+            
+            return await _newsArticleRepository.GetAllByDate(fromDate, toDate);
         }
 
         public async Task<bool> UpdateAsync(NewsArticleModel newsArticle)
@@ -59,6 +74,11 @@ namespace FUNewsManagementSystem.Service
             return true;
         }
 
+        public new async Task<NewsArticleModel?> GetById(string id)
+        {
+            return await _newsArticleRepository.GetById(id);
+        }
+
         public async Task<bool> DeleteAsync(NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
@@ -66,6 +86,16 @@ namespace FUNewsManagementSystem.Service
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
             return await _newsArticleRepository.RemoveAsync(newsArticle);
+        }
+
+        public async Task<List<NewsArticleModel>> Search(string? newsTitle, string? headline, string? newsContent, string? categoryName)
+        {
+            return await _newsArticleRepository.Search(newsTitle, headline, newsContent, categoryName);
+        }
+
+        public async Task<List<NewsArticleModel>> GetTop5NewestByCategory(string? categoryName)
+        {
+            return await _newsArticleRepository.GetTop5NewestByCategory(categoryName);
         }
     }
 }

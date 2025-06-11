@@ -1,6 +1,8 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem.Repository.Models.FormModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +28,44 @@ namespace FUNewsManagementSystem.Repository
             return itemList;
         }
 
+        public async Task<List<NewsArticleModel>?> GetAllByDate(DateTime fromDate, DateTime toDate)
+        { 
+            var itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Where(x => x.CreatedDate >= fromDate && x.CreatedDate < toDate.AddDays(1))
+                .OrderByDescending(x => x.CreatedDate)
+                .ToListAsync();
+
+            return itemList;
+        }
+
         public new async Task<NewsArticleModel?> GetById(string id)
         {
             var itemList = await _context.NewsArticles
                 .Include(x => x.Tags) 
                 .Include(x => x.Category)
                 .FirstOrDefaultAsync(x => x.NewsArticleId.Equals(id));
+
+            return itemList;
+        }
+
+        public async Task<List<NewsArticleModel>> GetTop5NewestByCategory(string? categoryName)
+        {
+            List<NewsArticleModel> itemList = new List<NewsArticleModel>();
+            if (categoryName.IsNullOrEmpty())
+            {
+                itemList = await _context.NewsArticles
+                    .Include(x => x.Tags)
+                    .OrderByDescending(x => x.CreatedDate)
+                    .Take(5)
+                    .ToListAsync();
+            }
+            itemList = await _context.NewsArticles
+                .Include(x => x.Tags)
+                .Where(x => x.Category.CategoryName.Equals(categoryName))
+                .OrderByDescending(x => x.CreatedDate)
+                .Take(5)
+                .ToListAsync();
 
             return itemList;
         }
