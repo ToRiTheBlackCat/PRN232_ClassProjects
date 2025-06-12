@@ -1,7 +1,36 @@
-var builder = WebApplication.CreateBuilder(args);
+using FUNewsManagementSystem.Service;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Text.Json.Serialization;
 
+using System.Configuration;
+
+var builder = WebApplication.CreateBuilder(args);
+var configuration = builder.Configuration;
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+}); ;
+
+
+builder.Services.AddAuthentication()
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+    {
+        options.LoginPath = new PathString("/Accounts/Login");
+        options.AccessDeniedPath = new PathString("/Accounts/Forbidden");
+        options.ExpireTimeSpan = TimeSpan.FromHours(5);
+
+    });
+
+builder.Services.AddHttpClient("ApiClient", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:50013/api/");
+    var apiBaseUrl = configuration.GetValue<string>("ApiBaseUrl");
+});
+
+builder.Services.AddRazorPages();
+
 
 var app = builder.Build();
 
@@ -17,7 +46,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

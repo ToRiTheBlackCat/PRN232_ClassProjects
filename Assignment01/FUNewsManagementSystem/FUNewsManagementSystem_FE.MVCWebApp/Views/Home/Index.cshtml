@@ -1,8 +1,134 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<FUNewsManagementSystem_FE.MVCWebApp.Models.NewsArticleModel>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<section class="whats-news-area pt-50 pb-20">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h3>Active News</h3>
+
+                <button type="button" class="btn btn-success mb-3" data-toggle="modal" data-target="#createNewsModal">
+                    Create New News Article
+                </button>
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        @TempData["SuccessMessage"]
+                        <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+                <div class="search-bar mb-30">
+                    <form asp-controller="Home" asp-action="Index" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchQuery" class="form-control" placeholder="Search news articles..." value="@ViewBag.CurrentSearchQuery" />
+                            <div class="input-group-append">
+                                <button class="btn btn-primary" type="submit">Search</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="row">
+                    @foreach (var news in Model)
+                    {
+                        if (news.NewsStatus == true)
+                        {
+                            <div class="col-lg-6 col-md-6">
+                                <div class="single-what-news mb-100">
+                                    <div class="what-img">
+                                        <img src="https://png.pngtree.com/png-vector/20190430/ourlarge/pngtree-vector-creative-bright-hot-news-tag-png-image_995496.jpg" alt="@news.NewsTitle" style="width: 300px; height: auto;" /> <!-- optional image -->
+                                    </div>
+                                    <div class="what-cap">
+                                        <span class="color1">Category ID: @news.CategoryId</span>
+                                        <h4><a asp-controller="Home" asp-action="Detail" asp-route-id="@news.NewsArticleId">@news.NewsTitle</a></h4>
+                                        <p>@news.Headline</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="createNewsModal" tabindex="-1" aria-labelledby="createNewsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createNewsModalLabel">Create New News Article</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form asp-action="CreateNewsArticle" asp-controller="Home" method="post">
+                    @Html.AntiForgeryToken() @* Add anti-forgery token for security *@
+
+                    <div class="mb-3">
+                        <label for="NewsTitle" class="form-label">News Title</label>
+                        <input type="text" class="form-control" id="NewsTitle" name="NewsTitle" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Headline" class="form-label">Headline</label>
+                        <input type="text" class="form-control" id="Headline" name="Headline" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NewsContent" class="form-label">News Content</label>
+                        <textarea class="form-control" id="NewsContent" name="NewsContent" rows="5"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="NewsSource" class="form-label">News Source</label>
+                        <input type="text" class="form-control" id="NewsSource" name="NewsSource" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="CategoryId" class="form-label">Category</label>
+                        <select class="form-control" id="CategoryId" name="CategoryId" >
+                            <option value="">-- Select Category --</option>
+                            @if (ViewBag.Categories != null)
+                            {
+                                foreach (var category in ViewBag.Categories)
+                                {
+                                    <option value="@category.CategoryId">@category.CategoryName</option>
+                                }
+                            }
+                            else
+                            {
+                                
+                            }
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="NewsStatus" value="true" />
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create News Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
+
+@section Scripts {
+    @{
+        // Ensure client-side validation scripts are loaded
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            // This script block is useful if you want to reopen the modal on validation failure
+            // If the model state was invalid after a POST, the modal should reopen.
+            @if (!ViewData.ModelState.IsValid)
+            {
+                    <text>
+                        var createNewsModal = new bootstrap.Modal(document.getElementById('createNewsModal'));
+                        createNewsModal.show();
+                    </text>
+            }
+        });
+    </script>
+}

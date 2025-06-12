@@ -1,5 +1,6 @@
 ﻿using FUNewsManagementSystem.Repository.Base;
 using FUNewsManagementSystem.Repository.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace FUNewsManagementSystem.Repository
 
         public async Task<bool> RemoveWithCheckingAsync(Category category)
         {
-            if (category.NewsArticles == null)
+            if (!category.NewsArticles.Any())
             {
                 _context.Remove(category);
                 await _context.SaveChangesAsync();
@@ -25,6 +26,24 @@ namespace FUNewsManagementSystem.Repository
             }
 
             return false;
+        }
+        public async Task<Category?> GetCategoryByIdAsync(short id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.ParentCategory)
+                .Include(c => c.NewsArticles)
+                .FirstOrDefaultAsync(c => c.CategoryId == id);
+            return category;
+        }
+
+        public async Task<List<Category>> GetCategories()
+        {
+            var categories = await _context.Categories
+                .Include(c => c.ParentCategory)
+                .Where(c => c.IsActive == true)
+                .OrderBy(c => c.CategoryId)
+                .ToListAsync();
+            return categories;
         }
     }
 }

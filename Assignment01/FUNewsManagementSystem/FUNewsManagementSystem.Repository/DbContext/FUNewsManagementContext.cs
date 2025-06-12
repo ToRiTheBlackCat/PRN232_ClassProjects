@@ -20,7 +20,7 @@ public partial class FUNewsManagementContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
-    public virtual DbSet<NewsArticle> NewsArticles { get; set; }
+    public virtual DbSet<NewsArticleModel> NewsArticles { get; set; }
 
     public virtual DbSet<SystemAccount> SystemAccounts { get; set; }
 
@@ -60,7 +60,7 @@ public partial class FUNewsManagementContext : DbContext
                 .HasConstraintName("FK_Category_Category");
         });
 
-        modelBuilder.Entity<NewsArticle>(entity =>
+        modelBuilder.Entity<NewsArticleModel>(entity =>
         {
             entity.ToTable("NewsArticle");
 
@@ -96,7 +96,7 @@ public partial class FUNewsManagementContext : DbContext
                         .HasForeignKey("TagId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_NewsTag_Tag"),
-                    l => l.HasOne<NewsArticle>().WithMany()
+                    l => l.HasOne<NewsArticleModel>().WithMany()
                         .HasForeignKey("NewsArticleId")
                         .OnDelete(DeleteBehavior.ClientSetNull)
                         .HasConstraintName("FK_NewsTag_NewsArticle"),
