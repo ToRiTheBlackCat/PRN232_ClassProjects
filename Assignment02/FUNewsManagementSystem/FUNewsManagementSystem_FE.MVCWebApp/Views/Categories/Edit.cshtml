@@ -1,0 +1,69 @@
+﻿@model FUNewsManagementSystem.Repository.Models.Category
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1 class="mb-4">Edit Category</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            <input type="hidden" asp-for="CategoryId" />
+
+            <!-- Category Name -->
+            <div class="mb-3">
+                <label asp-for="CategoryName" class="form-label fw-semibold">Category Name</label>
+                <input asp-for="CategoryName" class="form-control" />
+                <span asp-validation-for="CategoryName" class="text-danger"></span>
+            </div>
+
+            <!-- Category Description -->
+            <div class="mb-3">
+                <label asp-for="CategoryDesciption" class="form-label fw-semibold">Category Description</label>
+                <input asp-for="CategoryDesciption" class="form-control" />
+                <span asp-validation-for="CategoryDesciption" class="text-danger"></span>
+            </div>
+
+            <!-- Parent Category -->
+            <div class="mb-3">
+                <label asp-for="ParentCategoryId" class="form-label fw-semibold">Parent Category</label>
+                <select asp-for="ParentCategoryId" class="form-select" asp-items="ViewBag.ParentCategoryId"></select>
+                <span asp-validation-for="ParentCategoryId" class="text-danger"></span>
+            </div>
+
+            <!-- Is Active Checkbox -->
+            <div class="form-check mb-3">
+                <input type="checkbox" id="isActiveCheckbox" class="form-check-input" @(Model.IsActive == true ? "checked" : "") />
+                <label class="form-check-label" for="isActiveCheckbox">Is Active</label>
+                <input type="hidden" asp-for="IsActive" id="isActiveHidden" />
+                <span asp-validation-for="IsActive" class="text-danger d-block"></span>
+            </div>
+
+            <!-- Buttons -->
+                <button type="submit" class="btn btn-success">Update</button>
+                <a asp-action="Index" style="color: black">Back to List</a>
+      
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    const checkbox = document.getElementById("isActiveCheckbox");
+    const hiddenInput = document.getElementById("isActiveHidden");
+
+    function syncCheckbox() {
+        hiddenInput.value = checkbox.checked ? "True" : "False";
+    }
+
+    checkbox.addEventListener("change", syncCheckbox);
+    syncCheckbox();
+</script>
