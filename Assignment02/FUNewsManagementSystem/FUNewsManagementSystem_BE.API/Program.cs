@@ -7,21 +7,20 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
+using Microsoft.OpenApi.Models;
 
+static IEdmModel GetEdmModel()
+{
+    ODataConventionModelBuilder builder = new();
+    builder.EntitySet<NewsArticleModel>("NewsArticles");
+    //builder.EntitySet<T>();
+    return builder.GetEdmModel();
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllers()
-    .AddOData(options =>
-        options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(100)
-                .AddRouteComponents("odata", GetEdmModel())
-    )
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    });
+//builder.Services.AddControllers();
 
 builder.Services.AddScoped<NewsArticleService>();
 builder.Services.AddScoped<NewsArticleRepository>();
@@ -39,7 +38,6 @@ builder.Services.AddCors(options =>
     });
 
 });
-builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<AccountService>();
 builder.Services.AddScoped<DashboardService>();
@@ -53,7 +51,32 @@ builder.Services.AddScoped<CategoryRepository>();
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FUNewsManagementSystem API",
+        Version = "v1"
+    });
+
+    c.EnableAnnotations(); 
+});
+
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.WriteIndented = true;
+    })
+    .AddOData(options => options
+    .AddRouteComponents("odata", GetEdmModel())
+    .Select()
+    .Filter()
+    .OrderBy()
+    .SetMaxTop(20)
+    .Count()
+    .Expand()
+);
 
 
 var app = builder.Build();
@@ -71,12 +94,6 @@ app.UseHttpsRedirection();
 //app.UseAuthentication();
 
 app.UseAuthorization();
-IEdmModel GetEdmModel()
-{
-    var builder = new ODataConventionModelBuilder();
-    builder.EntitySet<NewsArticleModel>("NewsArticles");
-    return builder.GetEdmModel();
-}
 
 app.UseRouting();
 

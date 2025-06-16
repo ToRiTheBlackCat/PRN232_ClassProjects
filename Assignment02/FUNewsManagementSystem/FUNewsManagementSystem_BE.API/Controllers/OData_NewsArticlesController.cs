@@ -8,7 +8,8 @@ using Microsoft.AspNetCore.OData.Results;
 
 namespace FUNewsManagementSystem_BE.API.Controllers
 {
-    [Route("odata/[controller]")]
+    //[ApiExplorerSettings(IgnoreApi = true)]
+    [Route("odata/NewsArticles")]
     public class OData_NewsArticlesController : ODataController
     {
         private readonly NewsArticleService _newsArticleService;
@@ -21,26 +22,24 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         /// <summary>
         /// GET: odata/OData_NewsArticles
         /// </summary>
-        [EnableQuery]
+        [EnableQuery(PageSize = 10)]
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<IEnumerable<NewsArticleModel>>> Get()
         {
             var articles = await _newsArticleService.GetAllAsync();
-            return Ok(articles.AsQueryable());
+            return Ok(articles);
         }
 
         /// <summary>
         /// GET: odata/OData_NewsArticles('1')
         /// </summary>
         [EnableQuery]
-        [HttpGet("{key}")]
-        public async Task<IActionResult> Get([FromODataUri] string key)
+        [HttpGet("{id}")]
+        public async Task<SingleResult<NewsArticleModel>> Get([FromODataUri] string key)
         {
             var article = await _newsArticleService.GetByIdAsync(key);
-            if (article == null)
-                return NotFound();
-
-            return Ok(SingleResult.Create(new[] { article }.AsQueryable()));
+            return SingleResult.Create(new[] { article }.AsQueryable());
         }
+
     }
 }

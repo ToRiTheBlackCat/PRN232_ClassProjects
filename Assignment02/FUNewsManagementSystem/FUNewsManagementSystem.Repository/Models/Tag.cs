@@ -2,6 +2,7 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace FUNewsManagementSystem.Repository.Models;
 
@@ -12,6 +13,6 @@ public partial class Tag
     public string TagName { get; set; }
 
     public string Note { get; set; }
-
+    [JsonIgnore]
     public virtual ICollection<NewsArticleModel> NewsArticles { get; set; } = new List<NewsArticleModel>();
 }
