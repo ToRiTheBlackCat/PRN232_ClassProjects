@@ -56,13 +56,13 @@ namespace ProductManagementWebAPI.Controllers
 
                 var generatedToken = new JwtSecurityTokenHandler().WriteToken(preparedToken);
                 var role = account.Role.ToString();
-                var accountId = account.AccountId.ToString();
+                var accountName = account.AccountNote.ToString();
 
                 return Ok(new AccountResponseDTO
                 {
                     Role = role,
                     Token = generatedToken,
-                    AccountId = accountId
+                    AccountName = accountName
                 });
             }
             catch (Exception e)

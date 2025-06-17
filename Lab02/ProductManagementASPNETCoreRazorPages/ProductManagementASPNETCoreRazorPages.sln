@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagementRazorPages", "ProductManagementRazorPages\ProductManagementRazorPages.csproj", "{96260D74-8ABC-4AEE-90DE-CFD3425FDDB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagementRazorPages", "ProductManagementRazorPages\ProductManagementRazorPages.csproj", "{96260D74-8ABC-4AEE-90DE-CFD3425FDDB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BusinessObjects", "BusinessObjects\BusinessObjects.csproj", "{647B7C33-02E2-459A-AD73-EF0B796B0D76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BusinessObjects", "BusinessObjects\BusinessObjects.csproj", "{647B7C33-02E2-459A-AD73-EF0B796B0D76}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataAccessObjects", "DataAccessObjects\DataAccessObjects.csproj", "{42C04D40-4066-47B2-A0DC-32F952F975A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DataAccessObjects", "DataAccessObjects\DataAccessObjects.csproj", "{42C04D40-4066-47B2-A0DC-32F952F975A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repositories", "Repositories\Repositories.csproj", "{3E0852EC-D5A3-487B-8B1F-F3DB1B92B485}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "Repositories\Repositories.csproj", "{3E0852EC-D5A3-487B-8B1F-F3DB1B92B485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{53212C29-09FE-499A-9367-2ED3454B370F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{53212C29-09FE-499A-9367-2ED3454B370F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductManagementWebAPI", "ProductManagementWebAPI\ProductManagementWebAPI.csproj", "{759B0A45-3855-456C-AF4B-6178B8AA9918}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductManagementWebAPI", "ProductManagementWebAPI\ProductManagementWebAPI.csproj", "{759B0A45-3855-456C-AF4B-6178B8AA9918}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
