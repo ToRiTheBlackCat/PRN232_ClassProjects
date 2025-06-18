@@ -26,15 +26,14 @@ namespace ProductManagementRazorPages.Pages.CosmeticInformations
 
         public async Task OnGetAsync()
         {
-            //CosmeticInformation = await _context.CosmeticInformations
-            //    .Include(c => c.Category).ToListAsync();
 
             try
             {
                 using (var httpClient = new HttpClient())
                 {
-                    //var jsonContent = JsonConvert.SerializeObject(Login);
-                    //var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                    //var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
+                    //httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
+
 
                     var response = await httpClient.GetAsync(ConstantVariables.APIEndPoint + "CosmeticInformations");
                     if (response.IsSuccessStatusCode)

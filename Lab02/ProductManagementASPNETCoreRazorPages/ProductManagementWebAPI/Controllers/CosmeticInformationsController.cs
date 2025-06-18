@@ -97,9 +97,9 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOrStaffOrMember")]
+        //[Authorize(Policy = "AdminOrStaffOrMember")]
         [HttpGet("/api/CosmeticInformations/{id}")]
-        public async Task<ActionResult<CosmeticInformation>> AddCosmeticInformation(string id)
+        public async Task<ActionResult<CosmeticInformation>> GetCosmeticInformation(string id)
         {
             try
             {

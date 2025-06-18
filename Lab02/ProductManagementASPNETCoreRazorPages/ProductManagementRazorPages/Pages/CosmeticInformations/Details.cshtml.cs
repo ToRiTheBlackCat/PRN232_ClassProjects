@@ -7,19 +7,20 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using BusinessObjects.Models;
 using DataAccessObjects;
+using Newtonsoft.Json;
+using ProductManagementRazorPages.Constant;
 
 namespace ProductManagementRazorPages.Pages.CosmeticInformations
 {
     public class DetailsModel : PageModel
     {
-        private readonly DataAccessObjects.CosmeticsDBContext _context;
 
-        public DetailsModel(DataAccessObjects.CosmeticsDBContext context)
+        public DetailsModel()
         {
-            _context = context;
+
         }
 
-        public CosmeticInformation CosmeticInformation { get; set; } = default!;
+        public CosmeticInformation CosmeticInformation { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -28,15 +29,31 @@ namespace ProductManagementRazorPages.Pages.CosmeticInformations
                 return NotFound();
             }
 
-            var cosmeticinformation = await _context.CosmeticInformations.FirstOrDefaultAsync(m => m.CosmeticId == id);
-            if (cosmeticinformation == null)
+            try
             {
-                return NotFound();
+                using (var httpClient = new HttpClient())
+                {
+                    //var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
+                    //httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + tokenString);
+
+
+                    var response = await httpClient.GetAsync(ConstantVariables.APIEndPoint + "CosmeticInformations/" + id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var item = JsonConvert.DeserializeObject<CosmeticInformation>(responseBody);
+
+                        CosmeticInformation = item;
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+
             }
-            else
-            {
-                CosmeticInformation = cosmeticinformation;
-            }
+            catch (Exception ex) { }
+
             return Page();
         }
     }
