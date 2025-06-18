@@ -20,7 +20,7 @@ namespace ProductManagementWebAPI.Controllers
         }
 
         [EnableQuery]
-        [Authorize(Policy = "AdminOrStaffOrMember")]
+        //[Authorize(Policy = "AdminOrStaffOrMember")]
         [HttpGet("/api/CosmeticInformations")]
         public async Task<ActionResult<IEnumerable<CosmeticInformation>>> GetCosmeticInformations()
         {

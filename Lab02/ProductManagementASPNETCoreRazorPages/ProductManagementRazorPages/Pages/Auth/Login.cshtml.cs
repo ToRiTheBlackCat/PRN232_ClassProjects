@@ -49,6 +49,7 @@ namespace ProductManagementRazorPages.Pages.Auth
                             Response.Cookies.Append("Fullname", apiResponse.AccountName);
 
                             return RedirectToPage("/CosmeticInformations/Index");
+
                         }
                         else
                         {
