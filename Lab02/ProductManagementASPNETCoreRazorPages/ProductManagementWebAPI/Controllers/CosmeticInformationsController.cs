@@ -18,9 +18,9 @@ namespace ProductManagementWebAPI.Controllers
         {
             _cismeticInformationService = cismeticInformationService;
         }
-
+        //1-admin / 2-manager / 3-staff / 4-memeber 1
         [EnableQuery]
-        //[Authorize(Policy = "AdminOrStaffOrMember")]
+        [Authorize(Roles = "1,3,4")]
         [HttpGet("/api/CosmeticInformations")]
         public async Task<ActionResult<IEnumerable<CosmeticInformation>>> GetCosmeticInformations()
         {
@@ -35,7 +35,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        //[Authorize(Policy = "AdminOrStaffOrMember")]
+        [Authorize(Roles = "1,3,4")]
         [HttpGet("/api/CosmeticCategories")]
         public async Task<ActionResult<List<CosmeticCategory>>> GetCategories()
         {
@@ -50,7 +50,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "1")]
         [HttpPost("/api/CosmeticInformations")]
         public async Task<ActionResult<CosmeticInformation>> AddCosmeticInformation([FromBody] CosmeticInformation cosmeticInformation)
         {
@@ -65,7 +65,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        //[Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "1")]
         [HttpPut("/api/CosmeticInformations/{id}")]
         public async Task<ActionResult<CosmeticInformation>> UpdateCosmeticInformation(string id, [FromBody] CosmeticInformation cosmeticInformation)
         {
@@ -82,7 +82,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        [Authorize(Roles = "1")]
         [HttpDelete("/api/CosmeticInformations/{id}")]
         public async Task<ActionResult<CosmeticInformation>> DeleteCosmeticInformation(string id)
         {
@@ -97,7 +97,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        //[Authorize(Policy = "AdminOrStaffOrMember")]
+        [Authorize(Roles = "1,3,4")]
         [HttpGet("/api/CosmeticInformations/{id}")]
         public async Task<ActionResult<CosmeticInformation>> GetCosmeticInformation(string id)
         {

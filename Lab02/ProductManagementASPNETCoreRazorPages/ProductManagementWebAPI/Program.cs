@@ -108,7 +108,15 @@ builder.Services.AddAuthorization(options =>
             || context.User.FindFirst(claim => claim.Type == "Role").Value == "3"
             || context.User.FindFirst(claim => claim.Type == "Role").Value == "4")));
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 
 var app = builder.Build();
@@ -125,5 +133,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors("AllowAll");
 
 app.Run();

@@ -1,26 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BusinessObjects.Models;
+using DataAccessObjects;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using BusinessObjects.Models;
-using DataAccessObjects;
+using Newtonsoft.Json;
+using ProductManagementRazorPages.Constant;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace ProductManagementRazorPages.Pages.CosmeticInformations
 {
     public class DeleteModel : PageModel
     {
-        private readonly DataAccessObjects.CosmeticsDBContext _context;
-
-        public DeleteModel(DataAccessObjects.CosmeticsDBContext context)
+        public DeleteModel()
         {
-            _context = context;
         }
 
         [BindProperty]
-        public CosmeticInformation CosmeticInformation { get; set; } = default!;
+        public CosmeticInformation CosmeticInformation { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
@@ -29,16 +29,35 @@ namespace ProductManagementRazorPages.Pages.CosmeticInformations
                 return NotFound();
             }
 
-            var cosmeticinformation = await _context.CosmeticInformations.FirstOrDefaultAsync(m => m.CosmeticId == id);
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    }
 
-            if (cosmeticinformation == null)
-            {
-                return NotFound();
+                    var response = await httpClient.GetAsync(ConstantVariables.APIEndPoint + "CosmeticInformations/" + id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var item = JsonConvert.DeserializeObject<CosmeticInformation>(responseBody);
+
+                        CosmeticInformation = item;
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        return RedirectToPage("/Auth/Forbidden");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
-            else
-            {
-                CosmeticInformation = cosmeticinformation;
-            }
+            catch (Exception ex) { }
             return Page();
         }
 
@@ -49,13 +68,34 @@ namespace ProductManagementRazorPages.Pages.CosmeticInformations
                 return NotFound();
             }
 
-            var cosmeticinformation = await _context.CosmeticInformations.FindAsync(id);
-            if (cosmeticinformation != null)
+            try
             {
-                CosmeticInformation = cosmeticinformation;
-                _context.CosmeticInformations.Remove(CosmeticInformation);
-                await _context.SaveChangesAsync();
+                using (var httpClient = new HttpClient())
+                {
+                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    }
+
+                    var response = await httpClient.DeleteAsync(ConstantVariables.APIEndPoint + "CosmeticInformations/" + id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var item = JsonConvert.DeserializeObject<CosmeticInformation>(responseBody);
+
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        return RedirectToPage("/Auth/Forbidden");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
+            catch (Exception ex) { }
 
             return RedirectToPage("./Index");
         }

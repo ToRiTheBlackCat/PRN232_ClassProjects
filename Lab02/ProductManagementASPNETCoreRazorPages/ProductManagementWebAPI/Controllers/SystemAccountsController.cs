@@ -40,8 +40,7 @@ namespace ProductManagementWebAPI.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, account.EmailAddress),
-                    new Claim("Role", account.Role.ToString()),
-                    new Claim("AccountId", account.AccountId.ToString()),
+                    new Claim(ClaimTypes.Role, account.Role.ToString()),
                 };
 
                 var symetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
