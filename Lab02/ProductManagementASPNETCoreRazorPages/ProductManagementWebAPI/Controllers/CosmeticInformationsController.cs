@@ -35,7 +35,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOrStaffOrMember")]
+        //[Authorize(Policy = "AdminOrStaffOrMember")]
         [HttpGet("/api/CosmeticCategories")]
         public async Task<ActionResult<List<CosmeticCategory>>> GetCategories()
         {
@@ -65,7 +65,7 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        [Authorize(Policy = "AdminOnly")]
+        //[Authorize(Policy = "AdminOnly")]
         [HttpPut("/api/CosmeticInformations/{id}")]
         public async Task<ActionResult<CosmeticInformation>> UpdateCosmeticInformation(string id, [FromBody] CosmeticInformation cosmeticInformation)
         {
