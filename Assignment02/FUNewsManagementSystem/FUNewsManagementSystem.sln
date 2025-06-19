@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem.Serv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FUNewsManagementSystem_FE.MVCWebApp", "FUNewsManagementSystem_FE.MVCWebApp\FUNewsManagementSystem_FE.MVCWebApp.csproj", "{B98F3192-CB13-4C40-A0D6-FB795E4169F2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FUNewsManagementSystem_FE.RazorPageWebApp", "FUNewsManagementSystem_FE.RazorPageWebApp\FUNewsManagementSystem_FE.RazorPageWebApp.csproj", "{079E3EBD-B56F-92DA-4B72-C56468B95428}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B98F3192-CB13-4C40-A0D6-FB795E4169F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B98F3192-CB13-4C40-A0D6-FB795E4169F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B98F3192-CB13-4C40-A0D6-FB795E4169F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{079E3EBD-B56F-92DA-4B72-C56468B95428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{079E3EBD-B56F-92DA-4B72-C56468B95428}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{079E3EBD-B56F-92DA-4B72-C56468B95428}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{079E3EBD-B56F-92DA-4B72-C56468B95428}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
