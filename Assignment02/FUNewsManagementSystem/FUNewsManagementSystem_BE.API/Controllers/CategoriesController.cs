@@ -19,7 +19,8 @@ namespace FUNewsManagementSystem_BE.API.Controllers
 
 
         [HttpGet]
-        public async Task<ActionResult> GetCategories()
+        [Authorize(Roles = "2")]
+        public async Task<ActionResult<List<Category>>> GetCategories()
         {
             try
             {
