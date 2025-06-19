@@ -9,12 +9,14 @@ using FUNewsManagementSystem_BE.API.Models;
 
 namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Auth
 {
+    
     public class LoginModel : PageModel
     {
+        
 
-        public LoginModel()
+        public LoginModel(IConfiguration configuration)
         {
-
+            
         }
         public IActionResult OnGet()
         {
@@ -36,7 +38,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Auth
                     var jsonContent = JsonConvert.SerializeObject(Login);
                     var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                    var response = await httpClient.PostAsync(ConstantVariables.APIEndPoint + "SystemAccounts/login", content);
+                    var response = await httpClient.PostAsync(ConstantVariables.APIEndPoint + "Accounts/login", content);
                     if (response.IsSuccessStatusCode)
                     {
                         var responseBody = await response.Content.ReadAsStringAsync();
@@ -47,8 +49,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Auth
                             Response.Cookies.Append("JwtToken", apiResponse.Token);
                             Response.Cookies.Append("Fullname", apiResponse.AccountName);
 
-                            return RedirectToPage("/CosmeticInformations/Index");
-
+                            return RedirectToPage("/Categories/Index");
                         }
                         else
                         {
