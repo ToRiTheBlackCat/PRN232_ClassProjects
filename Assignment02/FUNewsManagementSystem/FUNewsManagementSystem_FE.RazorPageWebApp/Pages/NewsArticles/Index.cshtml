@@ -1,0 +1,77 @@
+﻿@page
+@model FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles.IndexModel
+@{
+    ViewData["Title"] = "News Articles";
+}
+
+<h2>Latest News Articles</h2>
+<a href="/NewsArticles/Create" class="btn btn-success">Add New Article</a>
+<input type="text" id="searchBox" placeholder="Search by title" />
+<button onclick="searchArticles()">Search</button>
+
+<table class="table table-bordered mt-3">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Created Date</th>
+            <th>Summary</th>
+        </tr>
+    </thead>
+    <tbody id="articles-body">
+        <tr><td colspan="3">Loading articles...</td></tr>
+    </tbody>
+</table>
+
+<script>
+    const API_BASE= "http://localhost:55171"
+    async function loadArticles() {
+        try {
+            const response = await fetch(`${API_BASE}/odata/NewsArticles?$orderby=CreatedDate desc&$top=10`);
+            const data = await response.json();
+            renderArticles(data.value);
+        }
+        catch (err){
+            console.error(err);
+        }
+    }
+
+    async function searchArticles() {
+        const title = document.getElementById("searchBox").value;
+        if (!title) return loadArticles();
+
+        try {
+            const response = await fetch(`${API_BASE}/odata/NewsArticles?$filter=contains(NewsTitle,'${encodeURIComponent(title)}')`);
+            const data = await response.json();
+
+            renderArticles(data.value);
+        } catch (err) {
+            console.error("Search failed:", err);
+            document.getElementById("articles-body").innerHTML = `<tr><td colspan="3">Search error occurred.</td></tr>`;
+        }
+    }
+
+        function renderArticles(articles) {
+        const tbody = document.getElementById("articles-body");
+        tbody.innerHTML = "";
+
+        if (!articles || articles.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3">No articles found.</td></tr>`;
+            return;
+        }
+
+        articles.forEach(article => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><strong>${article.NewsTitle}</strong><br />
+                <a href="/NewsArticles/Detail/${article.NewsArticleId}">Details</a> |
+                <a href="/NewsArticles/Edit/${article.NewsArticleId}">Edit</a> |
+                <a href="/NewsArticles/Delete/${article.NewsArticleId}">Delete</a>
+            </td>
+            <td>${new Date(article.CreatedDate).toLocaleDateString()}</td>
+            <td>${(article.NewsContent || "").substring(0, 150)}...</td>
+        `;
+        tbody.appendChild(row);
+    });
+    }
+    document.addEventListener("DOMContentLoaded", loadArticles);
+</script>
