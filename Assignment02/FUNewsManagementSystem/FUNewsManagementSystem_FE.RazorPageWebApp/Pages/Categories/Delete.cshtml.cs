@@ -1,25 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem_FE.RazorPageWebApp.Constant;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using FUNewsManagementSystem.Repository.Models;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
 {
     public class DeleteModel : PageModel
     {
-        private readonly FUNewsManagementSystem.Repository.Models.FUNewsManagementContext _context;
 
-        public DeleteModel(FUNewsManagementSystem.Repository.Models.FUNewsManagementContext context)
+        public DeleteModel( )
         {
-            _context = context;
+
         }
 
         [BindProperty]
-        public Category Category { get; set; } = default!;
+        public Category Category { get; set; } = new();
 
         public async Task<IActionResult> OnGetAsync(short? id)
         {
@@ -28,16 +31,47 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FirstOrDefaultAsync(m => m.CategoryId == id);
+            try
+            {
+                using (var httpClient = new HttpClient())
+                {
+                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    }
 
-            if (category == null)
-            {
-                return NotFound();
+                    var response = await httpClient.GetAsync(ConstantVariables.APIEndPoint + "Categories/" + id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var item = JsonConvert.DeserializeObject<Category>(responseBody);
+
+                        Category = item;
+
+                        var listResponse = await httpClient.GetAsync(ConstantVariables.APIEndPoint + "Categories");
+                        if (listResponse.IsSuccessStatusCode)
+                        {
+                            var jsonString = await listResponse.Content.ReadAsStringAsync();
+                            var cateList = JsonConvert.DeserializeObject<List<Category>>(jsonString);
+
+                            ViewData["ParentCategoryId"] = new SelectList(cateList, "CategoryId", "CategoryName");
+                        }
+
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        return RedirectToPage("/Auth/Forbidden");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
+
             }
-            else
-            {
-                Category = category;
-            }
+            catch (Exception ex) { }
+            
             return Page();
         }
 
@@ -48,13 +82,34 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
                 return NotFound();
             }
 
-            var category = await _context.Categories.FindAsync(id);
-            if (category != null)
+            try
             {
-                Category = category;
-                _context.Categories.Remove(Category);
-                await _context.SaveChangesAsync();
+                using (var httpClient = new HttpClient())
+                {
+                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    }
+
+                    var response = await httpClient.DeleteAsync(ConstantVariables.APIEndPoint + "Categories/" + id);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var responseBody = await response.Content.ReadAsStringAsync();
+                        var item = JsonConvert.DeserializeObject<Category>(responseBody);
+
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        return RedirectToPage("/Auth/Forbidden");
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                }
             }
+            catch (Exception ex) { }
 
             return RedirectToPage("./Index");
         }

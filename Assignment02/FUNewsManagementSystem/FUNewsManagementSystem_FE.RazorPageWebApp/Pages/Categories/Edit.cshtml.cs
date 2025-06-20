@@ -16,7 +16,6 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
 {
     public class EditModel : PageModel
     {
-
         public EditModel()
         {
 
@@ -124,10 +123,5 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
 
             return RedirectToPage("./Index");
         }
-
-        //private bool CategoryExists(short id)
-        //{
-        //    return _context.Categories.Any(e => e.CategoryId == id);
-        //}
     }
 }
