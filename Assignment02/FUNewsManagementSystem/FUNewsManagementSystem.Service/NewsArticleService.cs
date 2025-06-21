@@ -45,11 +45,13 @@ namespace FUNewsManagementSystem.Service
             {
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
-            newsArticle.NewsArticleId = new string((existingArticles.Count + 1).ToString());
+            newsArticle.NewsArticleId = (existingArticles.Count + 1).ToString();
             newsArticle.CreatedDate = DateTime.UtcNow;
             newsArticle.ModifiedDate = DateTime.UtcNow;
             newsArticle.NewsStatus = true;
             newsArticle.CategoryId = 1;
+            newsArticle.CreatedById = 1; 
+            newsArticle.UpdatedById = 1; // Assuming default user ID is 1
             await _newsArticleRepository.CreateAsync(newsArticle);
             return true;
             
@@ -68,8 +70,15 @@ namespace FUNewsManagementSystem.Service
                 throw new ArgumentNullException(nameof(newsArticle), "News article cannot be null.");
             }
             var existingArticle = await _newsArticleRepository.GetById(newsArticle.NewsArticleId);
+            newsArticle.CreatedDate = existingArticle?.CreatedDate;
             newsArticle.ModifiedDate = DateTime.UtcNow; // Update the modified date
             newsArticle.CategoryId = existingArticle?.CategoryId; // Preserve the category ID
+            newsArticle.CreatedById = existingArticle?.CreatedById;
+            newsArticle.NewsStatus = existingArticle?.NewsStatus ?? true; // Preserve the news status
+            if (newsArticle.UpdatedById == null)
+            {
+                newsArticle.UpdatedById = existingArticle?.UpdatedById; // Preserve the updated by ID if not set
+            }
             await _newsArticleRepository.UpdateAsync(newsArticle);
             return true;
         }

@@ -1,0 +1,26 @@
+﻿@page
+@model FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles.CreateModel
+@{
+}
+<h2>Create New Article</h2>
+
+<form method="post">
+    <div class="mb-3">
+        <label>Title</label>
+        <input asp-for="Article.NewsTitle" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Content</label>
+        <textarea asp-for="Article.NewsContent" class="form-control"></textarea>
+    </div>
+    <div class="mb-3">
+        <label>Headline</label>
+        <input asp-for="Article.Headline" class="form-control" />
+    </div>
+    <div class="mb-3">
+        <label>Source</label>
+        <input asp-for="Article.NewsSource" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
