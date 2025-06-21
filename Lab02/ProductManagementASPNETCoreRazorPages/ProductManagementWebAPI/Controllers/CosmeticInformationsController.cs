@@ -20,7 +20,7 @@ namespace ProductManagementWebAPI.Controllers
         }
         //1-admin / 2-manager / 3-staff / 4-memeber 1
         [EnableQuery]
-        [Authorize(Roles = "1,3,4")]
+        //[Authorize(Roles = "1,3,4")]
         [HttpGet("/api/CosmeticInformations")]
         public async Task<ActionResult<IEnumerable<CosmeticInformation>>> GetCosmeticInformations()
         {

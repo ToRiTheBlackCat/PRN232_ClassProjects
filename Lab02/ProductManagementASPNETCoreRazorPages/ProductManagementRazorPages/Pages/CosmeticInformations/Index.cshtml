@@ -8,8 +8,16 @@
 <h1>Index</h1>
 
 <p>
-    <a asp-page="Create">Create New</a>
+    <a class="btn btn-success" asp-page="Create">Create New</a>
 </p>
+
+<form method="post">
+    <input type="text" id="searchName" name="searchName" placeholder="Search by Name" />
+    <button class="btn btn-primary" type="submit">Search</button>
+</form>
+
+
+
 <table class="table">
     <thead>
         <tr>
@@ -35,32 +43,33 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model.CosmeticInformation) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.CosmeticName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SkinType)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ExpirationDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CosmeticSize)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DollarPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.CategoryName)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.CosmeticId">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.CosmeticId">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.CosmeticId">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model.CosmeticInformation)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CosmeticName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SkinType)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ExpirationDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CosmeticSize)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DollarPrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
+                <td>
+                    <a asp-page="./Edit" asp-route-id="@item.CosmeticId">Edit</a> |
+                    <a asp-page="./Details" asp-route-id="@item.CosmeticId">Details</a> |
+                    <a asp-page="./Delete" asp-route-id="@item.CosmeticId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
