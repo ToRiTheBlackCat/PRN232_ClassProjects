@@ -49,7 +49,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Auth
                             Response.Cookies.Append("JwtToken", apiResponse.Token);
                             Response.Cookies.Append("Fullname", apiResponse.AccountName);
 
-                            return RedirectToPage("/Categories/Index");
+                            return RedirectToPage("/NewsArticles/Index");
                         }
                         else
                         {
