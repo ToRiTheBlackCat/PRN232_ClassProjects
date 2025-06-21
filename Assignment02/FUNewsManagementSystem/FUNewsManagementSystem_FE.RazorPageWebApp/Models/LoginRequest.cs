@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace FUNewsManagementSystem_BE.API.Models
+namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models
 {
     public class LoginRequest
     {
