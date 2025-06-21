@@ -2,19 +2,29 @@ using BusinessObjects.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using Repositories;
 using Services;
 using System.Text;
 using System.Text.Json.Serialization;
-
+static IEdmModel GetEdmModel()
+{
+    ODataConventionModelBuilder builder = new();
+    builder.EntitySet<CosmeticInformation>("CosmeticInformations");
+    //builder.EntitySet<T>();
+    return builder.GetEdmModel();
+}
 var builder = WebApplication.CreateBuilder(args);
 
-var modelBuilder = new ODataConventionModelBuilder();
-modelBuilder.EntitySet<CosmeticInformation>("CosmeticInformations");
-modelBuilder.EntitySet<CosmeticCategory>("CosmeticCategories");
+//var modelBuilder = new ODataConventionModelBuilder();
+//modelBuilder.EntitySet<CosmeticInformation>("CosmeticInformations");
+//modelBuilder.EntitySet<CosmeticCategory>("CosmeticCategories");
 
+IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
 
 // Add services to the container.
 builder.Services.AddControllers()
@@ -23,15 +33,18 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
     })
-    .AddOData(
-    options => options.Select().Filter().OrderBy().Expand().Count().SetMaxTop(null).AddRouteComponents(
-        "odata",
-        modelBuilder.GetEdmModel()));
+    .AddOData(options => options
+    .AddRouteComponents("odata", GetEdmModel())
+    .Select()
+    .Filter()
+    .OrderBy()
+    .SetMaxTop(20)
+    .Count()
+    .Expand()
+);
 
 
-IConfiguration configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", true, true).Build();
+
 
 builder.Services.AddScoped<ISystemAccountRepository, SystemAccountRepository>();
 builder.Services.AddScoped<ICosmeticInformationRepository, CosmeticInformationRepository>();
@@ -108,12 +121,19 @@ builder.Services.AddAuthorization(options =>
             || context.User.FindFirst(claim => claim.Type == "Role").Value == "3"
             || context.User.FindFirst(claim => claim.Type == "Role").Value == "4")));
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder.AllowAnyOrigin()
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -122,8 +142,15 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+app.UseRouting(); 
 
-app.MapControllers();
+app.UseCors("AllowAll");
+
+app.UseAuthentication(); 
+app.UseAuthorization();  
+
+app.UseODataRouteDebug();
+
+app.MapControllers(); 
 
 app.Run();

@@ -40,8 +40,7 @@ namespace ProductManagementWebAPI.Controllers
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, account.EmailAddress),
-                    new Claim("Role", account.Role.ToString()),
-                    new Claim("AccountId", account.AccountId.ToString()),
+                    new Claim(ClaimTypes.Role, account.Role.ToString()),
                 };
 
                 var symetricKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]));
@@ -56,13 +55,13 @@ namespace ProductManagementWebAPI.Controllers
 
                 var generatedToken = new JwtSecurityTokenHandler().WriteToken(preparedToken);
                 var role = account.Role.ToString();
-                var accountId = account.AccountId.ToString();
+                var accountName = account.AccountNote.ToString();
 
                 return Ok(new AccountResponseDTO
                 {
                     Role = role,
                     Token = generatedToken,
-                    AccountId = accountId
+                    AccountName = accountName
                 });
             }
             catch (Exception e)

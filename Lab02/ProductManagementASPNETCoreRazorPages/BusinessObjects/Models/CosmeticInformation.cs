@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObjects.Models;
 
@@ -22,6 +23,5 @@ public partial class CosmeticInformation
     public decimal DollarPrice { get; set; }
 
     public string CategoryId { get; set; }
-
     public virtual CosmeticCategory Category { get; set; }
 }
