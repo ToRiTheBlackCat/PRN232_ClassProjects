@@ -19,7 +19,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            Article = await _httpClient.GetFromJsonAsync<NewsArticleModel>($"http://localhost:55171/odata/NewsArticles('{id}')");
+            Article = await _httpClient.GetFromJsonAsync<NewsArticleModel>($"https://localhost:55171/odata/NewsArticles('{id}')");
             if (Article == null) return NotFound();
             return Page();
         }
@@ -28,7 +28,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles
         {
             if (!ModelState.IsValid) return Page();
 
-            var response = await _httpClient.PutAsJsonAsync($"http://localhost:55171/odata/NewsArticles('{Article.NewsArticleId}')", Article);
+            var response = await _httpClient.PutAsJsonAsync($"https://localhost:55171/odata/NewsArticles('{Article.NewsArticleId}')", Article);
             if (response.IsSuccessStatusCode)
                 return RedirectToPage("Index");
 

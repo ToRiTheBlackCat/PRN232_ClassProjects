@@ -31,7 +31,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles
             Article.ModifiedDate ??= DateTime.UtcNow;
             Article.NewsStatus ??= true;      
 
-            var response = await _httpClient.PostAsJsonAsync("http://localhost:55171/odata/NewsArticles", Article);
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:55171/odata/NewsArticles", Article);
             if (response.IsSuccessStatusCode)
                 return RedirectToPage("Index");
             if (!response.IsSuccessStatusCode)

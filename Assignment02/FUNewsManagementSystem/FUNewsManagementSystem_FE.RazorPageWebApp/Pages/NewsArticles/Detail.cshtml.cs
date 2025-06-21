@@ -17,7 +17,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            var response = await _httpClient.GetFromJsonAsync<NewsArticleView>($"http://localhost:55171/odata/NewsArticles('{id}')");
+            var response = await _httpClient.GetFromJsonAsync<NewsArticleView>($"https://localhost:55171/odata/NewsArticles('{id}')");
             if (response == null)
                 return NotFound();
 

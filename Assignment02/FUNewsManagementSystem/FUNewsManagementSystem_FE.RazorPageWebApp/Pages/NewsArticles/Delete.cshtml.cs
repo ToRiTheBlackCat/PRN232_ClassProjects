@@ -20,14 +20,14 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles
 
         public async Task<IActionResult> OnGetAsync(string id)
         {
-            Article = await _httpClient.GetFromJsonAsync<NewsArticleView>($"http://localhost:55171/odata/NewsArticles('{id}')");
+            Article = await _httpClient.GetFromJsonAsync<NewsArticleView>($"https://localhost:55171/odata/NewsArticles('{id}')");
             if (Article == null) return NotFound();
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var response = await _httpClient.DeleteAsync($"http://localhost:55171/odata/NewsArticles('{Article.NewsArticleId}')");
+            var response = await _httpClient.DeleteAsync($"https://localhost:55171/odata/NewsArticles('{Article.NewsArticleId}')");
             if (response.IsSuccessStatusCode)
                 return RedirectToPage("Index");
             if (!response.IsSuccessStatusCode)
