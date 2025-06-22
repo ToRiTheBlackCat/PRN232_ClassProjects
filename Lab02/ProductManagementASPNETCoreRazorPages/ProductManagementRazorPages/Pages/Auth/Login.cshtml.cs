@@ -45,6 +45,15 @@ namespace ProductManagementRazorPages.Pages.Auth
 
                         if (apiResponse != null && apiResponse.Token != null)
                         {
+                            var claims = new List<Claim>
+                            {
+                                new Claim(ClaimTypes.Name, apiResponse.AccountName),
+                                new Claim(ClaimTypes.Role, apiResponse.Role)
+                            };
+
+                            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(identity));
+
                             Response.Cookies.Append("JwtToken", apiResponse.Token);
                             Response.Cookies.Append("Fullname", apiResponse.AccountName);
 

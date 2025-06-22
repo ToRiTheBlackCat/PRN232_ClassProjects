@@ -1,4 +1,5 @@
 using BusinessObjects.Models;
+using DataAccessObjects;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OData;
 using Microsoft.IdentityModel.Tokens;
@@ -13,6 +14,8 @@ static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
     builder.EntitySet<CosmeticInformation>("CosmeticInformations");
+    builder.EntitySet<CosmeticCategory>("CosmeticCategories");
+    builder.EntitySet<SystemAccount>("SystemAccounts");
     //builder.EntitySet<T>();
     return builder.GetEdmModel();
 }
@@ -44,12 +47,12 @@ builder.Services.AddControllers()
 );
 
 
-
-
 builder.Services.AddScoped<ISystemAccountRepository, SystemAccountRepository>();
 builder.Services.AddScoped<ICosmeticInformationRepository, CosmeticInformationRepository>();
 builder.Services.AddScoped<ISystemAccountService, SystemAccountService>();
 builder.Services.AddScoped<ICosmeticInformationService, CosmeticInformationService>();
+builder.Services.AddScoped<ICosmeticCategoryService, CosmeticCategoryService>();
+builder.Services.AddScoped<CosmeticsDBContext>();
 
 builder.Services
     .AddAuthentication(x =>

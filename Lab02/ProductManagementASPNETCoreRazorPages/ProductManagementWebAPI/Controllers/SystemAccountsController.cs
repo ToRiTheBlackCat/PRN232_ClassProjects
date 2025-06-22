@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using BusinessObjects.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.AspNetCore.OData.Routing.Controllers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Services;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +15,8 @@ namespace ProductManagementWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SystemAccountsController : ControllerBase
+    [Authorize(Roles = "1")]
+    public class SystemAccountsController : ODataController
     {
         private readonly ISystemAccountService _systemAccountService;
 
@@ -23,6 +29,7 @@ namespace ProductManagementWebAPI.Controllers
         // POST: api/SystemAccounts
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost("Login")]
+        [AllowAnonymous]
         public async Task<ActionResult> Login([FromBody] AccountRequestDTO loginDTO)
         {
             try
@@ -68,6 +75,105 @@ namespace ProductManagementWebAPI.Controllers
             {
                 return BadRequest(e.Message);
             }
+        }
+
+        [EnableQuery]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SystemAccount>>> Get()
+        {
+            return await _systemAccountService.Get();
+        }
+
+
+        [HttpGet("{key}")]
+        public async Task<ActionResult<SystemAccount>> GetAsync([FromRoute] int key)
+        {
+            var cosmeticCategory = await _systemAccountService.Get(key);
+
+            if (cosmeticCategory == null)
+            {
+                return NotFound();
+            }
+
+            return cosmeticCategory;
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateAccount([FromBody] SystemAccount cosmeticCategory)
+        {
+            try
+            {
+                var result = await _systemAccountService.Update(cosmeticCategory);
+                return Ok(result);
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!AccountExists(cosmeticCategory.AccountId))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+        }
+
+        // POST: api/CosmeticCategories
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<CosmeticCategory>> CreateAccount([FromBody] SystemAccount account)
+        {
+            try
+            {
+                var result = await _systemAccountService.Add(account);
+                return Ok(result);
+            }
+            catch (DbUpdateException)
+            {
+                if (AccountExists(account.AccountId))
+                {
+                    return Conflict();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+        }
+
+        // DELETE: api/CosmeticCategories/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAccount(int id)
+        {
+            if (!AccountExists(id))
+            {
+                return NotFound();
+            }
+
+            try
+            {
+                var result = await _systemAccountService.Delete(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+        }
+
+        private bool AccountExists(int id)
+        {
+            var item = _systemAccountService.Get(id).Result;
+            return item != null;
         }
     }
 }
