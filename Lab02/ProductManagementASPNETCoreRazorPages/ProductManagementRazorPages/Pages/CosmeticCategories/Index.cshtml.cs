@@ -1,5 +1,6 @@
 ﻿using BusinessObjects.Models;
 using DataAccessObjects;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +13,9 @@ using static ProductManagementRazorPages.Pages.CosmeticCategories.IndexModel;
 
 namespace ProductManagementRazorPages.Pages.CosmeticCategories
 {
+    [Authorize(Roles = "1")]
     public class IndexModel : PageModel
     {
-
         public IndexModel()
         {
         }
@@ -27,11 +28,11 @@ namespace ProductManagementRazorPages.Pages.CosmeticCategories
         public int PageCount => (int)Math.Ceiling(ItemCount * 1.0 / PageSize);
 
         // Search Properties
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string CategoryName { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string UsagePurpose { get; set; }
-        [BindProperty]
+        [BindProperty(SupportsGet = true)]
         public string FormulationType { get; set; }
 
         public async Task OnGetAsync()

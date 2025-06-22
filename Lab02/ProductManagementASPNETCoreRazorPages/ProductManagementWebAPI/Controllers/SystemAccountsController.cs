@@ -15,7 +15,7 @@ namespace ProductManagementWebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize("1")]
+    [Authorize(Roles = "1")]
     public class SystemAccountsController : ODataController
     {
         private readonly ISystemAccountService _systemAccountService;

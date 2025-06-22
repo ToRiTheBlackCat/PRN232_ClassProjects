@@ -84,9 +84,9 @@
             <li class="page-item @(Model.PageNum == 1 ? "disabled" : "")">
                 <a class="page-link" href="@Url.Page("Index", new { 
                         pageNum = Model.PageNum - 1, 
-                        fullName = ViewBag.FullName, 
-                        email = ViewBag.Email, 
-                        roleId = ViewBag.RoleId })">Previous</a>
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">Previous</a>
             </li>
 
             @for (int i = 1; i <= Model.PageCount; i++)
@@ -94,9 +94,9 @@
                 <li class="page-item @(i == Model.PageNum ? "active" : "")">
                     <a class="page-link" href="@Url.Page("Index", new { 
                         pageNum = i, 
-                        fullName = ViewBag.FullName, 
-                        email = ViewBag.Email, 
-                        roleId = ViewBag.RoleId })">@i</a>
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">@i</a>
                 </li>
             }
 
@@ -104,9 +104,9 @@
                 <a class="page-link" 
                     href="@Url.Page("Index", new { 
                         pageNum = Model.PageNum + 1, 
-                        fullName = ViewBag.FullName, 
-                        email = ViewBag.Email, 
-                        roleId = ViewBag.RoleId })">Next</a>
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">Next</a>
             </li>
         </ul>
     </nav>
