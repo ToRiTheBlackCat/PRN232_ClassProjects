@@ -23,9 +23,29 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="CosmeticInformations/Index">CosmeticInformations</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/CosmeticCategories/Index">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-page="/SystemAccounts/Index">Accounts</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+                </div>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end">
+                    <div class="nav-item text-nowrap text-success">
+                        Welcome
+                        <strong>@Context.Request.Cookies["Fullname"]?.ToString()</strong>
+                        <form method="post" asp-page="/Auth/Login" asp-page-handler="Logout" style="display: inline;">
+                            <button type="submit" class="btn btn-link text-danger" style="border: none; background: none; cursor: pointer;">
+                                Logout
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </nav>

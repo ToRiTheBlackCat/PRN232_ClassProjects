@@ -1,0 +1,113 @@
+﻿@page
+@model ProductManagementRazorPages.Pages.CosmeticCategories.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create" class="btn btn-success">Create New</a>
+</p>
+
+<div class="row">
+    <div class="card-header col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="CategoryName" class="control-label"></label>
+                <input asp-for="CategoryName" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="UsagePurpose" class="control-label"></label>
+                <input asp-for="UsagePurpose" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="FormulationType" class="control-label"></label>
+                <input asp-for="FormulationType" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Filter" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.CosmeticCategory[0].CategoryId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CosmeticCategory[0].CategoryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CosmeticCategory[0].UsagePurpose)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CosmeticCategory[0].FormulationType)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.CosmeticCategory) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsagePurpose)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormulationType)
+            </td>
+            <td>
+                <div style="display: flex; flex-direction: column;">
+                    <a asp-page="./Edit" asp-route-id="@item.CategoryId" class="btn btn-success">Edit</a>
+                    <a asp-page="./Details" asp-route-id="@item.CategoryId" class="btn btn-primary">Details</a>
+                    <a asp-page="./Delete" asp-route-id="@item.CategoryId" class="btn btn-danger">Delete</a>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+
+<div class="card-footer text-center">
+    <nav>
+        <ul class="pagination justify-content-center mb-0">
+            <li class="page-item @(Model.PageNum == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Page("Index", new { 
+                        pageNum = Model.PageNum - 1, 
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">Previous</a>
+            </li>
+
+            @for (int i = 1; i <= Model.PageCount; i++)
+            {
+                <li class="page-item @(i == Model.PageNum ? "active" : "")">
+                    <a class="page-link" href="@Url.Page("Index", new { 
+                        pageNum = i, 
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(Model.PageNum == Model.PageCount ? "disabled" : "")">
+                <a class="page-link" 
+                    href="@Url.Page("Index", new { 
+                        pageNum = Model.PageNum + 1, 
+                        UsagePurpose = Model.UsagePurpose, 
+                        CategoryName = Model.CategoryName, 
+                        CosmeticCategory = Model.CosmeticCategory })">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>

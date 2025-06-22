@@ -1,0 +1,51 @@
+﻿@page
+@model ProductManagementRazorPages.Pages.SystemAccounts.EditModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>SystemAccount</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="SystemAccount.AccountId" />
+            <div class="form-group">
+                <label asp-for="SystemAccount.AccountPassword" class="control-label"></label>
+                <input asp-for="SystemAccount.AccountPassword" class="form-control" />
+                <span asp-validation-for="SystemAccount.AccountPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SystemAccount.EmailAddress" class="control-label"></label>
+                <input asp-for="SystemAccount.EmailAddress" class="form-control" />
+                <span asp-validation-for="SystemAccount.EmailAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SystemAccount.AccountNote" class="control-label"></label>
+                <input asp-for="SystemAccount.AccountNote" class="form-control" />
+                <span asp-validation-for="SystemAccount.AccountNote" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SystemAccount.Role" class="control-label"></label>
+                @* <input asp-for="SystemAccount.Role" class="form-control" /> *@
+                @Html.DropDownListFor(m => m.SystemAccount.Role, (SelectList)ViewBag.Roles, new { @class = "form-control", placeholder = "Enter member role" })
+                <span asp-validation-for="SystemAccount.Role" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-page="./Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
