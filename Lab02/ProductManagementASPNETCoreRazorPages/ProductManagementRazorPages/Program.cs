@@ -1,7 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +12,6 @@ builder.Services.AddAuthentication()
         options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
 
     });
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -35,20 +35,20 @@ namespace ProductManagementWebAPI.Controllers
             }
         }
 
-        //[Authorize(Roles = "1,3,4")]
-        //[HttpGet("/api/CosmeticCategories")]
-        //public async Task<ActionResult<List<CosmeticCategory>>> GetCategories()
-        //{
-        //    try
-        //    {
-        //        var result = await _cismeticInformationService.GetAllCategories();
-        //        return Ok(result);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(400, $"{ex.Message}");
-        //    }
-        //}
+        [Authorize(Roles = "1,3,4")]
+        [HttpGet("/api/CosmeticCategories")]
+        public async Task<ActionResult<List<CosmeticCategory>>> GetCategories()
+        {
+            try
+            {
+                var result = await _cismeticInformationService.GetAllCategories();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(400, $"{ex.Message}");
+            }
+        }
 
         [Authorize(Roles = "1")]
         [HttpPost("/api/CosmeticInformations")]
