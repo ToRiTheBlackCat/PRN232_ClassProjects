@@ -52,5 +52,10 @@ namespace FUNewsManagementSystem.Service
         {
             return await _accountRepository.CreateAccountAsync(acc);
         }
+
+        public IQueryable<SystemAccount> GetAccountsQuery()
+        {
+            return _accountRepository.GetAccountsQuery();
+        }
     }
 }

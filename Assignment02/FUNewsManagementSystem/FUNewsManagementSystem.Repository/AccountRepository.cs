@@ -85,5 +85,10 @@ namespace FUNewsManagementSystem.Repository
             var account = await _context.SystemAccounts.FirstOrDefaultAsync(u => u.AccountEmail == email && u.AccountPassword == password);
             return account;
         }
+
+        public IQueryable<SystemAccount> GetAccountsQuery()
+        {
+            return _context.SystemAccounts.Include(x => x.NewsArticles).AsQueryable();
+        }
     }
 }
