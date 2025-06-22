@@ -1,4 +1,56 @@
 ﻿@page
 @model FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Dashboard.IndexModel
 @{
+    ViewData["Title"] = "Dashboard";
 }
+
+<h1>Dashboard</h1>
+
+<h4>DashboardView</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="DashboardData.TotalNewsCount" class="control-label"></label>
+            @Html.DisplayFor(model => model.DashboardData.TotalNewsCount)
+        </div>
+
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="DashboardData.SelectedFilter"></label>
+                <select asp-for="DashboardData.SelectedFilter" asp-items="Model.DashboardData.FilterOptions" class="form-control">
+                    <option value="">-- Select Filter --</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DashboardData.fromDate" class="control-label"></label>
+                <input asp-for="DashboardData.fromDate" class="form-control" />
+                <span asp-validation-for="DashboardData.fromDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DashboardData.toDate" class="control-label"></label>
+                <input asp-for="DashboardData.toDate" class="form-control" />
+                <span asp-validation-for="DashboardData.toDate" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="DashboardData.categoryName" class="control-label"></label>
+                <input asp-for="DashboardData.categoryName" class="form-control" />
+                <span asp-validation-for="DashboardData.categoryName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+

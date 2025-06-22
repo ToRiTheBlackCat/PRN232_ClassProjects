@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using FUNewsManagementSystem.Repository.Models;
 using AutoMapper;
-using FUNewsManagementSystem.Repository.Models.FormModels;
 using FUNewsManagementSystem_FE.MVCWebApp.Constant;
 using Newtonsoft.Json;
+using FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels;
 
 namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
 {

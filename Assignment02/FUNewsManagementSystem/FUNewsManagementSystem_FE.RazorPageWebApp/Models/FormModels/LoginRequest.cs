@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace FUNewsManagementSystem_FE.MVCWebApp.Models
+namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
 {
 	public class LoginRequest
 	{

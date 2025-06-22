@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FUNewsManagementSystem.Repository.Models.FormModels
+namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
 {
     public class SystemAccountView
     {
@@ -18,6 +18,6 @@ namespace FUNewsManagementSystem.Repository.Models.FormModels
 
         public string AccountPassword { get; set; }
 
-        //public ICollection<NewsArticleView> NewsArticles { get; set; } = new List<NewsArticleView>();
+        public ICollection<NewsArticleView> NewsArticles { get; set; } = new List<NewsArticleView>();
     }
 }

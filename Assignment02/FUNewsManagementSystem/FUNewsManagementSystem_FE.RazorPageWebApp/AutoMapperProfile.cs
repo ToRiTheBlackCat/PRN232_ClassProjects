@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
-using FUNewsManagementSystem.Repository.Models;
-using FUNewsManagementSystem.Repository.Models.FormModels;
+using FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

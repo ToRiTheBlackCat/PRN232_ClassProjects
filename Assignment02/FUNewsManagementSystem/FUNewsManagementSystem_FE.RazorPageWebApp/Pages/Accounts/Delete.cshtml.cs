@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FUNewsManagementSystem.Repository.Models;
-using FUNewsManagementSystem.Repository.Models.FormModels;
 using FUNewsManagementSystem_FE.MVCWebApp.Constant;
 using Newtonsoft.Json;
+using FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels;
 
 namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
 {
@@ -30,7 +29,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                 }
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"odata/SystemAccounts({id})");
+                    var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"odata/SystemAccounts?" + $"$filter=accountId eq {id}");
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
@@ -64,7 +63,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                 }
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + $"odata/SystemAccounts({id})");
+                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + $"odata/SystemAccounts?" + $"$filter=accountId eq {id}");
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToPage("./Index");

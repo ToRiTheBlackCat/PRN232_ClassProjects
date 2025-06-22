@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FUNewsManagementSystem.Repository.Models.FormModels
+namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
 {
     public class TagView
     {

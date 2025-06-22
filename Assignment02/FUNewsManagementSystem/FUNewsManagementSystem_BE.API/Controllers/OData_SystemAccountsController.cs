@@ -25,6 +25,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             _mapper = mapper;
         }
 
+        [HttpGet]
         [EnableQuery(PageSize = 10)]
         public ActionResult<IQueryable<SystemAccountView>> Get()
         {
@@ -33,14 +34,17 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             return Ok(mapped);
         }
 
+        /*[HttpGet("({id})")]
         [EnableQuery]
-        public async Task<SingleResult<SystemAccountView>> Get([FromODataUri] short key)
+        public async Task<SingleResult<SystemAccountView>> Get([FromODataUri] short id)
         {
-            var result = await _accServ.GetAccountByIdAsync(key);
-            var mapped = new[] { result }.AsQueryable().ProjectTo<SystemAccountView>(_mapper.ConfigurationProvider);
+            var result = _accServ.GetAccountsQuery()
+                .Where(x => x.AccountId == id)
+                .ProjectTo<SystemAccountView>(_mapper.ConfigurationProvider);
+            
 
-            return SingleResult.Create(mapped);
-        }
+            return SingleResult.Create(result);
+        }*/
 
         [HttpPost]
         public async Task<IActionResult> CreateAccount(CreateAccountForm form)
@@ -65,7 +69,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("({id})")]
         public async Task<IActionResult> DeleteAccount([FromODataUri]short id)
         {
             return !(await _accServ.DeleteAccountAsync(id))

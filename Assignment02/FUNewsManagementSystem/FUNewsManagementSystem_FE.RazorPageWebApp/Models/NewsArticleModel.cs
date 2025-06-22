@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
-namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
+namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models
 {
-    public class NewsArticleView
+    public class NewsArticleModel
     {
+        [Key]
         public string NewsArticleId { get; set; }
 
         public string NewsTitle { get; set; }
@@ -20,7 +18,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
 
         public string NewsSource { get; set; }
 
-        public short? CategoryId { get; set; }
+        public short? CategoryId { get; set; } = 1;
 
         public bool? NewsStatus { get; set; }
 
@@ -29,7 +27,8 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels
         public short? UpdatedById { get; set; }
 
         public DateTime? ModifiedDate { get; set; }
-
-        public List<TagView> TagsList { get; set; } = new();
+        public CategoryModel Category { get; set; }
+        [JsonPropertyName("tags")]
+        public List<TagModel> Tags { get; set; }
     }
 }
