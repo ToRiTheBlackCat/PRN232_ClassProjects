@@ -41,6 +41,7 @@ namespace ProductManagementRazorPages.Pages.SystemAccounts
 
 
             var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+
             var filterQuery = $"?$filter={nameof(SystemAccount.EmailAddress)} eq '{SystemAccount.EmailAddress}'";
             var testExistEmail = await APICaller.GetAsync<GetAllResponseModel>("SystemAccounts" + filterQuery, tokenString, true);
             if (testExistEmail.Value.Any())
@@ -51,7 +52,7 @@ namespace ProductManagementRazorPages.Pages.SystemAccounts
                 return Page();
             }
 
-            var created = await APICaller.PostAsync<SystemAccount, SystemAccount>($"SystemAccounts", SystemAccount);
+            var created = await APICaller.PostAsync<SystemAccount, SystemAccount>($"SystemAccounts", SystemAccount, tokenString);
 
             return RedirectToPage("./Index");
         }

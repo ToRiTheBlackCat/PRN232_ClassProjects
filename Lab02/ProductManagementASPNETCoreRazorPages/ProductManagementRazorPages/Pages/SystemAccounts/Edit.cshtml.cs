@@ -54,7 +54,8 @@ namespace ProductManagementRazorPages.Pages.SystemAccounts
 
             try
             {
-                var updated = await APICaller.PutAsync<SystemAccount, SystemAccount>($"SystemAccounts", SystemAccount);
+                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                var updated = await APICaller.PutAsync<SystemAccount, SystemAccount>($"SystemAccounts", SystemAccount, tokenString);
             }
             catch (DbUpdateConcurrencyException)
             {

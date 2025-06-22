@@ -38,7 +38,7 @@ namespace ProductManagementRazorPages.Pages.CosmeticCategories
 
             try
             {
-                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "TokenString").Value;
+                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
                 var cosmeticcategory = await APICaller.PostAsync<CosmeticCategory, CosmeticCategory>($"CosmeticCategories", CosmeticCategory, tokenString);
             }
             catch (Exception ex)

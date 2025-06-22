@@ -31,6 +31,7 @@ namespace ProductManagementRazorPages.Pages.CosmeticCategories
             }
 
             var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+            
             var cosmeticcategory =  await APICaller.GetAsync<CosmeticCategory>($"CosmeticCategories/{id}", tokenString, true);
             if (cosmeticcategory == null)
             {
@@ -51,7 +52,8 @@ namespace ProductManagementRazorPages.Pages.CosmeticCategories
 
             try
             {
-                var updated = await APICaller.PutAsync<CosmeticCategory, CosmeticCategory>($"CosmeticCategories", CosmeticCategory);
+                var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                var updated = await APICaller.PutAsync<CosmeticCategory, CosmeticCategory>($"CosmeticCategories", CosmeticCategory, tokenString);
             }
             catch (DbUpdateConcurrencyException)
             {
