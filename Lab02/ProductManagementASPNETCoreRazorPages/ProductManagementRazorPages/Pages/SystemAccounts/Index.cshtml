@@ -1,0 +1,85 @@
+﻿@page
+@model ProductManagementRazorPages.Pages.SystemAccounts.IndexModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-page="Create">Create New</a>
+</p>
+
+<div class="row">
+    <div class="card-header col-md-4">
+        <form method="post">
+            <div class="form-group">
+                <label asp-for="AccountNote" class="control-label"></label>
+                <input asp-for="AccountNote" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                @* <select asp-for="Role" class="form-control" asp-items="Model.AccountRoles"/> *@
+                @Html.DropDownListFor(m => m.Role, (SelectList)ViewBag.Roles, new { @class = "form-control", placeholder = "Enter member role" }) 
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemAccount[0].AccountNote)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemAccount[0].Role)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemAccount[0].EmailAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SystemAccount[0].AccountPassword)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.SystemAccount)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNote)
+                </td>
+                <td>
+                    @{
+                        var selectedRole = Model.AccountRoles
+                        .FirstOrDefault(x => x.Value.Equals(item.Role.ToString()));
+                        if (selectedRole == null)
+                        {
+                            selectedRole = new SelectListItem { Value = "-1", Text = "Unknown Role" };
+                        }
+                    }
+                    @Html.DisplayFor(modelItem => selectedRole.Text)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmailAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountPassword)
+                </td>
+                <td>
+                    <div style="display: flex; flex-direction: column;">
+                        <a asp-page="./Edit" asp-route-id="@item.AccountId" class="btn btn-success">Edit</a>
+                        <a asp-page="./Details" asp-route-id="@item.AccountId" class="btn btn-primary">Details</a>
+                        <a asp-page="./Delete" asp-route-id="@item.AccountId" class="btn btn-danger">Delete</a>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
