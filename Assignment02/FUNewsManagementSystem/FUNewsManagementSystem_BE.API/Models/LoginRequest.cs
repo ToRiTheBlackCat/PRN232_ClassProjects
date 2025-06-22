@@ -1,12 +1,13 @@
 ﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace FUNewsManagementSystem_BE.API.Models
 {
     public class LoginRequest
     {
-        [JsonProperty("accountEmail")]
-        public string AccountEmail { get; set; }
-        [JsonProperty("accountPassword")]
-        public string AccountPassword { get; set; }
+        [Required]
+        public string Email { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

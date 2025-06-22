@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.OData;
 using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using FUNewsManagementSystem.Repository.Models.FormModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -39,51 +42,17 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 //builder.Services.AddControllers();
-
-builder.Services.AddScoped<NewsArticleService>();
-builder.Services.AddScoped<NewsArticleRepository>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
+IConfiguration configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true, true).Build();
 
 builder.Services.AddDbContext<FUNewsManagementContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowAll", policy =>
-    {
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-    });
-
-});
-
-builder.Services.AddScoped<AccountService>();
-builder.Services.AddScoped<DashboardService>();
-builder.Services.AddScoped<NewsArticleService>();
-
-builder.Services.AddScoped<AccountRepository>();
-builder.Services.AddScoped<DashboardRepository>();
-builder.Services.AddScoped<NewsArticleRepository>();
-builder.Services.AddScoped<CategoryRepository>();
-
-builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
-{
-    c.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Title = "FUNewsManagementSystem API",
-        Version = "v1"
-    });
-
-    c.EnableAnnotations(); 
-});
-
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
         options.JsonSerializerOptions.WriteIndented = true;
     })
     .AddOData(options => options
@@ -96,6 +65,85 @@ builder.Services.AddControllers()
     .Expand()
 );
 
+builder.Services.AddScoped<NewsArticleService>();
+builder.Services.AddScoped<NewsArticleRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<DashboardService>();
+builder.Services.AddScoped<NewsArticleService>();
+
+builder.Services.AddScoped<AccountRepository>();
+builder.Services.AddScoped<DashboardRepository>();
+builder.Services.AddScoped<NewsArticleRepository>();
+builder.Services.AddScoped<CategoryRepository>();
+
+builder.Services
+    .AddAuthentication(x =>
+    {
+        x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(x =>
+    {
+        x.SaveToken = true;
+        x.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidIssuer = configuration["JWT:Issuer"],
+            ValidAudience = configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]))
+        };
+    });
+
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    var jwtSecurityScheme = new OpenApiSecurityScheme
+    {
+        Name = "JWT Authentication",
+        Description = "JWT Authentication for Cosmetics Management",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    };
+
+    c.AddSecurityDefinition("Bearer", jwtSecurityScheme);
+
+    var securityRequirement = new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    };
+
+    c.AddSecurityRequirement(securityRequirement);
+});
+
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+
+});
+
+
 
 var app = builder.Build();
 
@@ -105,15 +153,21 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRouting();
+
 app.UseCors("AllowAll");
+
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
+app.UseRouting();
+
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseRouting();
 
 app.MapControllers();
 
