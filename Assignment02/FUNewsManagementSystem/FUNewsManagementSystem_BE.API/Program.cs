@@ -11,11 +11,29 @@ using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using FUNewsManagementSystem.Repository.Models.FormModels;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 static IEdmModel GetEdmModel()
 {
     ODataConventionModelBuilder builder = new();
     builder.EntitySet<NewsArticleModel>("NewsArticles");
+
+    builder.EntitySet<NewsArticleView>("NewsArticlesViews")
+        .EntityType.HasKey(n => n.NewsArticleId);
+
+    builder.EntitySet<SystemAccountView>("SystemAccountsViews")
+        .EntityType.HasKey(a => a.AccountId);
+
+    builder.EntitySet<TagView>("TagsViews")
+        .EntityType.HasKey(t => t.TagId);
+
+    var functionNewsCount = builder.Function("GetTotalNewsCountOData")
+    .Returns<int>();
+
+    functionNewsCount.Parameter<string>("categoryName");
+    functionNewsCount.Parameter<DateTime?>("fromDate");
+    functionNewsCount.Parameter<DateTime?>("toDate");
     //builder.EntitySet<T>();
     return builder.GetEdmModel();
 }
