@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using FUNewsManagementSystem.Repository.Models;
+using FUNewsManagementSystem_FE.MVCWebApp.Constant;
+using FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using FUNewsManagementSystem_FE.MVCWebApp.Constant;
 using Newtonsoft.Json;
-using FUNewsManagementSystem_FE.RazorPageWebApp.Models.FormModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
 {
@@ -18,7 +20,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
         [BindProperty]
         public string? accName { get; set; } = default!;
         [BindProperty]
-        public IList<SystemAccountView> SystemAccounts { get;set; } = default!;
+        public IList<SystemAccountView> SystemAccounts { get;set; } = new List<SystemAccountView>();
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -26,6 +28,12 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
             {
                 using (var httpClient = new HttpClient())
                 {
+                    var tokenString = HttpContext.Request.Cookies.FirstOrDefault(c => c.Key == "JwtToken").Value;
+                    if (!string.IsNullOrEmpty(tokenString))
+                    {
+                        httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenString);
+                    }
+
                     var response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "odata/SystemAccounts");
                     if (response.IsSuccessStatusCode)
                     {
@@ -33,6 +41,10 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                         var list = JsonConvert.DeserializeObject<List<SystemAccountView>>(jsonString);
                         SystemAccounts = list;
                         return Page();
+                    }
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        return RedirectToPage("/Auth/Forbidden");
                     }
                 }
             }

@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem.Repository.Models.FormModels;
 using FUNewsManagementSystem.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Formatter;
@@ -27,6 +28,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
 
         [HttpGet]
         [EnableQuery(PageSize = 10)]
+        [Authorize]
         public ActionResult<IQueryable<SystemAccountView>> Get()
         {
             var mapped = _accServ.GetAccountsQuery()

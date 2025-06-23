@@ -9,6 +9,7 @@ using FUNewsManagementSystem.Repository.Models;
 using FUNewsManagementSystem.Service;
 using FUNewsManagementSystem.Repository.Models.FormModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace FUNewsManagementSystem_BE.API.Controllers
 {
@@ -26,6 +27,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> ListAll()
         {
             var item = await _serv.ListAccountsAsync("");

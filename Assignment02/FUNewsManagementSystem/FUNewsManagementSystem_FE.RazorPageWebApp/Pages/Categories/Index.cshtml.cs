@@ -42,7 +42,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Categories
                         Category = categories;
 
                     }
-                    else if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
                     {
                         return RedirectToPage("/Auth/Forbidden");
                     }
