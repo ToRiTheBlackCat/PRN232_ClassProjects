@@ -70,6 +70,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             }
         }
 
+        [EnableQuery]
         [HttpDelete("({id})")]
         public async Task<IActionResult> DeleteAccount([FromODataUri]short id)
         {
@@ -83,6 +84,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 });
         }
 
+        [EnableQuery]
         [HttpPatch]
         public async Task<IActionResult> UpdateAccount(UpdateAccountForm acc)
         {

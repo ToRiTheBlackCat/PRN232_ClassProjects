@@ -38,14 +38,14 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        var item = JsonConvert.DeserializeObject<SystemAccountView>(jsonString);
+                        var item = JsonConvert.DeserializeObject<List<SystemAccountView>>(jsonString);
                         if (item == null)
                         {
                             return NotFound();
                         }
                         else
                         {
-                            SystemAccount = _mapper.Map<UpdateAccountForm>(item);
+                            SystemAccount = _mapper.Map<UpdateAccountForm>(item.First());
                         }
                         return Page();
                     }
