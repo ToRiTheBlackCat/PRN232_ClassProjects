@@ -28,7 +28,6 @@ namespace FUNewsManagementSystem_BE.API.Controllers
 
         [HttpGet]
         [EnableQuery(PageSize = 10)]
-        [Authorize]
         public ActionResult<IQueryable<SystemAccountView>> Get()
         {
             var mapped = _accServ.GetAccountsQuery()
@@ -71,6 +70,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
             }
         }
 
+        [EnableQuery]
         [HttpDelete("({id})")]
         public async Task<IActionResult> DeleteAccount([FromODataUri]short id)
         {
@@ -84,6 +84,7 @@ namespace FUNewsManagementSystem_BE.API.Controllers
                 });
         }
 
+        [EnableQuery]
         [HttpPatch]
         public async Task<IActionResult> UpdateAccount(UpdateAccountForm acc)
         {

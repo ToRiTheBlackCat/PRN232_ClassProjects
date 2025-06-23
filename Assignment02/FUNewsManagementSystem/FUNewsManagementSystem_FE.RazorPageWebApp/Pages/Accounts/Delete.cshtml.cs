@@ -33,14 +33,14 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                     if (response.IsSuccessStatusCode)
                     {
                         var jsonString = await response.Content.ReadAsStringAsync();
-                        var item = JsonConvert.DeserializeObject<SystemAccountView>(jsonString);
+                        var item = JsonConvert.DeserializeObject<List<SystemAccountView>>(jsonString);
                         if (item == null)
                         {
                             return NotFound();
                         }
                         else
                         {
-                            SystemAccount = item;
+                            SystemAccount = item.First();
                         }
                         return Page();
                     }
@@ -63,7 +63,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Accounts
                 }
                 using (var httpClient = new HttpClient())
                 {
-                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + $"odata/SystemAccounts?" + $"$filter=accountId eq {id}");
+                    var response = await httpClient.DeleteAsync(ProjectConstant.APIEndPoint + $"api/SystemAccounts/{id}");
                     if (response.IsSuccessStatusCode)
                     {
                         return RedirectToPage("./Index");

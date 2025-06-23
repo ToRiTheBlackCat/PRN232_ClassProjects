@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FUNewsManagementSystem.Repository
+namespace FUNewsManagementSystem_FE.RazorPageWebApp
 {
     public class AutoMapperProfile : Profile
     {
