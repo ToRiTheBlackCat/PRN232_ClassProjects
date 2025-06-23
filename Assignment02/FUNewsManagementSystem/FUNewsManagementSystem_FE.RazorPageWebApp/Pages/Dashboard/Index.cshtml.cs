@@ -54,20 +54,20 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Dashboard
 
                     if (string.IsNullOrEmpty(filter) || filter.Contains("none"))
                     {
-                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "Dashboard/newsCount/category");
+                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + "odata/Dashboard/newsCount");
                     }
                     else if (filter.Contains("date"))
                     {
                         var fromDateStr = DashboardData.fromDate.ToString("O");
                         var toDateStr = DashboardData.toDate.ToString("O");
 
-                        var url = ProjectConstant.APIEndPoint + $"Dashboard/newsCount/date?fromDate={Uri.EscapeDataString(fromDateStr)}&toDate={Uri.EscapeDataString(toDateStr)}";
+                        var url = ProjectConstant.APIEndPoint + $"odata/Dashboard/newsCount/?fromDate={Uri.EscapeDataString(fromDateStr)}&toDate={Uri.EscapeDataString(toDateStr)}";
                         response = await httpClient.GetAsync(url);
                     }
                     else
                     {
                         var category = Uri.EscapeDataString(DashboardData.categoryName ?? "");
-                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"Dashboard/newsCount/category?categoryName={category}");
+                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"Dashboard/newsCount/?categoryName={category}");
                     }
 
                     if (response.IsSuccessStatusCode)
