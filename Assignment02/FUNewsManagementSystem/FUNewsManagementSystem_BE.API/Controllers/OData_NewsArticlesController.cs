@@ -41,29 +41,14 @@ namespace FUNewsManagementSystem_BE.API.Controllers
         }
 
         [EnableQuery]
-        public async Task<IActionResult> Post([FromBody] NewsArticleView newsArticle)
+        public async Task<IActionResult> Post([FromBody] NewsArticleModel newsArticle)
         {
             if (newsArticle == null)
             {
                 return BadRequest("News article cannot be null.");
-            }
+            }           
 
-            NewsArticleModel addNew = new NewsArticleModel
-            {
-                NewsArticleId = newsArticle.NewsArticleId,
-                NewsTitle = newsArticle.NewsTitle,
-                Headline = newsArticle.Headline,
-                NewsContent = newsArticle.NewsContent,
-                NewsSource = newsArticle.NewsSource,
-                CategoryId = newsArticle.CategoryId,
-                CreatedDate = DateTime.UtcNow,
-                ModifiedDate = DateTime.UtcNow,
-                NewsStatus = true, // Assuming default status is true
-                CreatedById = 1, // Assuming default user ID is 1
-                UpdatedById = 1 // Assuming default user ID is 1
-            };
-
-            var result = await _newsArticleService.AddAsync(addNew);
+            var result = await _newsArticleService.AddAsync(newsArticle);
             if (result)
             {
                 return CreatedAtAction(nameof(Get), new { key = newsArticle.NewsArticleId }, newsArticle);
