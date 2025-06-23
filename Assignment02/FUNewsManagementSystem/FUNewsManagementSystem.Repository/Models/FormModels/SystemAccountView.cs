@@ -18,6 +18,6 @@ namespace FUNewsManagementSystem.Repository.Models.FormModels
 
         public string AccountPassword { get; set; }
 
-        public ICollection<NewsArticleView> NewsArticles { get; set; } = new List<NewsArticleView>();
+        //public ICollection<NewsArticleView> NewsArticles { get; set; } = new List<NewsArticleView>();
     }
 }

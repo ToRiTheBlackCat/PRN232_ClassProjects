@@ -1,0 +1,15 @@
+﻿@page "{id}"
+@model FUNewsManagementSystem_FE.RazorPageWebApp.Pages.NewsArticles.DetailModel
+@{
+    ViewData["Title"] = "News Article Details";
+}
+<h2>@Model.Article.NewsTitle</h2>
+<p><strong>Created:</strong> @Model.Article.CreatedDate</p>
+<p><strong>Headline:</strong> @Model.Article.Headline</p>
+<p>@Model.Article.NewsContent</p>
+<p><strong>Source:</strong> @Model.Article.NewsSource</p>
+<p><strong>Author:</strong> @Model.Article.CreatedDate</p>
+<p><strong>Last Updated:</strong> @Model.Article.ModifiedDate</p>
+<a class="btn btn-primary" href="/NewsArticles/Edit/@Model.Article.NewsArticleId">Update</a>
+<a class="btn btn-danger" href="/NewsArticles/Delete/@Model.Article.NewsArticleId">Delete</a>
+<a class="btn btn-secondary" href="/NewsArticles/Index">Back</a>

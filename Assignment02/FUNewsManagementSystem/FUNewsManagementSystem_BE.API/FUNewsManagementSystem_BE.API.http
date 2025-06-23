@@ -1,6 +1,6 @@
 @FUNewsManagementSystem_BE.API_HostAddress = http://localhost:5260
 
-GET {{FUNewsManagementSystem_BE.API_HostAddress}}/weatherforecast/
+GET {{FUNewsManagementSystem_BE.API_HostAddress}}/odata/SystemAccounts$top=5
 Accept: application/json
 
 ###
