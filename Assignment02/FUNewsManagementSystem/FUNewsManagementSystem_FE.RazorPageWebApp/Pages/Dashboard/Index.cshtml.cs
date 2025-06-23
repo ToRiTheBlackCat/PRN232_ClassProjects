@@ -67,7 +67,7 @@ namespace FUNewsManagementSystem_FE.RazorPageWebApp.Pages.Dashboard
                     else
                     {
                         var category = Uri.EscapeDataString(DashboardData.categoryName ?? "");
-                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"Dashboard/newsCount/?categoryName={category}");
+                        response = await httpClient.GetAsync(ProjectConstant.APIEndPoint + $"odata/Dashboard/newsCount/?categoryName={category}");
                     }
 
                     if (response.IsSuccessStatusCode)
