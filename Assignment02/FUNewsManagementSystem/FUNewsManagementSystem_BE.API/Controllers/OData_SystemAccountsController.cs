@@ -28,7 +28,6 @@ namespace FUNewsManagementSystem_BE.API.Controllers
 
         [HttpGet]
         [EnableQuery(PageSize = 10)]
-        [Authorize]
         public ActionResult<IQueryable<SystemAccountView>> Get()
         {
             var mapped = _accServ.GetAccountsQuery()
